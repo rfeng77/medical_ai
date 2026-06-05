@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { BodyPanel } from './components/BodyPanel'
-import { ChatPanel } from './components/ChatPanel'
 import { ConclusionPanel } from './components/ConclusionPanel'
+import { LeftPanel } from './components/LeftPanel'
 import { TopBar } from './components/TopBar'
 import { CASES, MAX_TURNS, MIN_TURNS } from './data/cases'
 import { generateDoctorResponse } from './services/gemini'
@@ -11,10 +11,15 @@ import type {
   RevealedClue,
   SymptomItem,
 } from './types/triage'
+import { getConditionFromUrl } from './utils/condition'
 import './styles/app.css'
 
+let idCounter = 0
+
 function createId(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`
+  idCounter += 1
+  const uniqueId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${idCounter}`
+  return `${prefix}-${uniqueId}`
 }
 
 function toGeminiMessages(messages: ChatMessage[]): GeminiMessage[] {
@@ -27,6 +32,7 @@ function toGeminiMessages(messages: ChatMessage[]): GeminiMessage[] {
 }
 
 function App() {
+  const condition = useMemo(() => getConditionFromUrl(), [])
   const [currentCaseId, setCurrentCaseId] = useState(CASES[0].id)
   const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([])
   const [revealedClues, setRevealedClues] = useState<RevealedClue[]>([])
@@ -106,7 +112,9 @@ function App() {
   function revealClue(clue: RevealedClue) {
     if (controlsLocked || revealedClues.some((item) => item.id === clue.id)) return
     setRevealedClues((items) => [...items, clue])
-    void sendPatientMessage(clue.detail)
+    if (condition === 'chat') {
+      void sendPatientMessage(clue.detail)
+    }
   }
 
   function handleOpening() {
@@ -135,9 +143,10 @@ function App() {
 
   return (
     <div className="app-shell">
-      <TopBar isThinking={isThinking} />
+      <TopBar isThinking={isThinking} condition={condition} />
       <main className="triage-layout">
-        <ChatPanel
+        <LeftPanel
+          condition={condition}
           messages={conversationHistory}
           canConclude={doctorTurns >= MIN_TURNS}
           disabled={controlsLocked}

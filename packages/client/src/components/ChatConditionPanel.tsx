@@ -3,7 +3,7 @@ import { ChatInput } from './ChatInput'
 import { MessageList } from './MessageList'
 import { QuickActions } from './QuickActions'
 
-type ChatPanelProps = {
+export type ChatConditionPanelProps = {
   messages: ChatMessageType[]
   canConclude: boolean
   disabled: boolean
@@ -15,7 +15,7 @@ type ChatPanelProps = {
   onSend: (message: string) => void
 }
 
-export function ChatPanel({
+export function ChatConditionPanel({
   messages,
   canConclude,
   disabled,
@@ -25,7 +25,7 @@ export function ChatPanel({
   onReset,
   onConclude,
   onSend,
-}: ChatPanelProps) {
+}: ChatConditionPanelProps) {
   return (
     <section className="chat-panel">
       {error ? <div className="error-banner">{error}</div> : null}
