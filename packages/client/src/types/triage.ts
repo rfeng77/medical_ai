@@ -17,14 +17,15 @@ export type SymptomItem = {
 }
 
 export type TriageCase = {
-  id: string
+  caseId: string
+  id?: string
   label: string
   target: CareLabel
   opening: string
   patientCard: string
   probabilities: Record<CareLabel, number>
   notes: string
-  regions: Record<RegionKey, string>
+  regions: Record<string, string>
   symptoms: SymptomItem[]
 }
 
@@ -41,9 +42,4 @@ export type ChatMessage = {
   id: string
   role: ChatRole
   content: string
-}
-
-export type GeminiMessage = {
-  role: 'user' | 'model'
-  parts: Array<{ text: string }>
 }

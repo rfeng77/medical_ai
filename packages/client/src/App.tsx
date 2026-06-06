@@ -1,174 +1,291 @@
-import { useMemo, useState } from 'react'
-import { BodyPanel } from './components/BodyPanel'
-import { ConclusionPanel } from './components/ConclusionPanel'
-import { LeftPanel } from './components/LeftPanel'
-import { TopBar } from './components/TopBar'
-import { CASES, MAX_TURNS, MIN_TURNS } from './data/cases'
-import { generateDoctorResponse } from './services/gemini'
+import { useEffect, useMemo, useState } from "react";
+import { BodyPanel } from "./components/BodyPanel";
+import { ConclusionPanel } from "./components/ConclusionPanel";
+import { LeftPanel } from "./components/LeftPanel";
+import { TopBar } from "./components/TopBar";
+import {
+  CASES,
+  EXPERIMENT_OPENING_QUESTION,
+  MAX_TURNS,
+  MIN_TURNS,
+} from "./data/cases";
+import {
+  fetchCases,
+  type TriageCaseApiItem,
+  sendChatMessage,
+} from "./services/api";
 import type {
+  CareLabel,
   ChatMessage,
-  GeminiMessage,
   RevealedClue,
-  SymptomItem,
-} from './types/triage'
-import { getConditionFromUrl } from './utils/condition'
-import './styles/app.css'
+  TriageCase,
+} from "./types/triage";
+import { getConditionFromUrl } from "./utils/condition";
+import "./styles/app.css";
 
-let idCounter = 0
+let idCounter = 0;
 
 function createId(prefix: string) {
-  idCounter += 1
-  const uniqueId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${idCounter}`
-  return `${prefix}-${uniqueId}`
+  idCounter += 1;
+  const uniqueId =
+    globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${idCounter}`;
+  return `${prefix}-${uniqueId}`;
 }
 
-function toGeminiMessages(messages: ChatMessage[]): GeminiMessage[] {
-  return messages
-    .filter((message) => message.role !== 'system')
-    .map((message) => ({
-      role: message.role === 'doctor' ? 'model' : 'user',
-      parts: [{ text: message.content }],
-    }))
+function normalizeCase(
+  caseItem: TriageCaseApiItem | TriageCase,
+): TriageCase | null {
+  const caseId = caseItem.caseId ?? caseItem.id;
+
+  const openingComplaint =
+    "openingComplaint" in caseItem ? caseItem.openingComplaint : null;
+
+  const opening =
+    typeof openingComplaint === "string" && openingComplaint
+      ? openingComplaint
+      : typeof caseItem.opening === "string" && caseItem.opening
+        ? caseItem.opening
+        : "";
+
+  const patientCard =
+    typeof caseItem.patientCard === "string" && caseItem.patientCard
+      ? caseItem.patientCard
+      : "";
+
+  if (!caseId || !caseItem.label) {
+    return null;
+  }
+
+  return {
+    caseId,
+    id: caseId,
+    label: caseItem.label,
+    target: (caseItem.target ?? "Self-care") as CareLabel,
+    opening,
+    patientCard,
+    probabilities: caseItem.probabilities ?? {
+      "Self-care": 0,
+      "Routine GP": 0,
+      "Urgent Primary Care": 0,
+      "A&E": 0,
+      Ambulance: 0,
+    },
+    notes: caseItem.notes ?? "",
+    regions: caseItem.regions ?? {
+      epigastric: "",
+      periumbilical: "",
+      rlq: "",
+      llq: "",
+      general: "",
+    },
+    symptoms: caseItem.symptoms ?? [],
+  };
 }
 
 function App() {
-  const condition = useMemo(() => getConditionFromUrl(), [])
-  const [currentCaseId, setCurrentCaseId] = useState(CASES[0].id)
-  const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([])
-  const [revealedClues, setRevealedClues] = useState<RevealedClue[]>([])
-  const [isThinking, setIsThinking] = useState(false)
-  const [doctorTurns, setDoctorTurns] = useState(0)
-  const [sessionConcluded, setSessionConcluded] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const condition = useMemo(() => getConditionFromUrl(), []);
 
-  const currentCase = useMemo(
-    () => CASES.find((caseItem) => caseItem.id === currentCaseId) ?? CASES[0],
-    [currentCaseId],
-  )
+  const [selectedCase, setSelectedCase] = useState<TriageCase | null>(null);
+  const [isLoadingCases, setIsLoadingCases] = useState(true);
+  const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>(
+    [],
+  );
+  const [revealedClues, setRevealedClues] = useState<RevealedClue[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
+  const [doctorTurns, setDoctorTurns] = useState(0);
+  const [sessionConcluded, setSessionConcluded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [caseError, setCaseError] = useState<string | null>(null);
 
-  const revealedSymptoms = useMemo(
-    () =>
-      new Set(
-        revealedClues
-          .filter((clue) => clue.source === 'symptom')
-          .map((clue) => clue.id.replace('symptom-', '')),
-      ),
-    [revealedClues],
-  )
+  const controlsLocked =
+    isLoadingCases ||
+    !selectedCase ||
+    isThinking ||
+    sessionConcluded ||
+    doctorTurns >= MAX_TURNS;
 
-  const controlsLocked = isThinking || sessionConcluded || doctorTurns >= MAX_TURNS
+  useEffect(() => {
+    let isMounted = true;
 
-  function resetTrial(caseId = currentCaseId) {
-    setCurrentCaseId(caseId)
-    setConversationHistory([])
-    setRevealedClues([])
-    setIsThinking(false)
-    setDoctorTurns(0)
-    setSessionConcluded(false)
-    setError(null)
+    async function loadCases() {
+      setIsLoadingCases(true);
+
+      try {
+        const backendCases = (await fetchCases())
+          .map(normalizeCase)
+          .filter((item): item is TriageCase => item !== null);
+
+        const nextCases = backendCases.length > 0 ? backendCases : CASES;
+        const initialCase = nextCases[0];
+
+        if (!isMounted) return;
+
+        setSelectedCase(initialCase);
+        setCaseError(null);
+
+        console.log("Loaded cases:", nextCases);
+        console.log("Initial selected case:", initialCase);
+      } catch (requestError) {
+        if (!isMounted) return;
+
+        const fallbackCase = CASES[0];
+
+        setSelectedCase(fallbackCase);
+        setCaseError(
+          requestError instanceof Error
+            ? `Cases could not be loaded from the backend. Showing the first available case. ${requestError.message}`
+            : "Cases could not be loaded from the backend. Showing the first available case.",
+        );
+
+        console.warn("Falling back to local cases:", requestError);
+      } finally {
+        if (isMounted) {
+          setIsLoadingCases(false);
+        }
+      }
+    }
+
+    void loadCases();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  function resetTrial(nextCase = selectedCase) {
+    setSelectedCase(nextCase);
+    setConversationHistory([]);
+    setRevealedClues([]);
+    setIsThinking(false);
+    setDoctorTurns(0);
+    setSessionConcluded(false);
+    setError(null);
   }
 
   async function sendPatientMessage(content: string) {
-    if (controlsLocked) return
+    if (controlsLocked || !selectedCase || !content.trim()) return;
 
     const patientMessage: ChatMessage = {
-      id: createId('patient'),
-      role: 'patient',
+      id: createId("patient"),
+      role: "patient",
       content,
-    }
-    const nextHistory = [...conversationHistory, patientMessage]
+    };
 
-    setConversationHistory(nextHistory)
-    setIsThinking(true)
-    setError(null)
+    const nextHistory = [...conversationHistory, patientMessage];
+
+    setConversationHistory(nextHistory);
+    setIsThinking(true);
+    setError(null);
 
     try {
-      const doctorResponse = await generateDoctorResponse(toGeminiMessages(nextHistory))
-      const doctorMessage: ChatMessage = {
-        id: createId('doctor'),
-        role: 'doctor',
-        content: doctorResponse,
-      }
+      console.log("selectedCase before chat:", selectedCase);
+      console.log("caseId sent to backend:", selectedCase.caseId);
 
-      setConversationHistory([...nextHistory, doctorMessage])
+      const chatResponse = await sendChatMessage({
+        participantId: "test_web_001",
+        caseId: selectedCase.caseId,
+        condition,
+        message: content,
+      });
+
+      const doctorMessage: ChatMessage = {
+        id: createId("doctor"),
+        role: "doctor",
+        content: chatResponse.response,
+      };
+
+      setConversationHistory([...nextHistory, doctorMessage]);
+
       setDoctorTurns((turns) => {
-        const nextTurns = turns + 1
+        const nextTurns = turns + 1;
+
         if (nextTurns >= MAX_TURNS) {
-          setSessionConcluded(true)
+          setSessionConcluded(true);
         }
-        return nextTurns
-      })
+
+        return nextTurns;
+      });
     } catch (requestError) {
       const message =
-        requestError instanceof Error
-          ? requestError.message
-          : 'Unable to generate a doctor response.'
-      setError(message)
-    } finally {
-      setIsThinking(false)
-    }
-  }
+        requestError instanceof TypeError
+          ? "Backend server is not connected. Please make sure the server is running on http://localhost:3001."
+          : requestError instanceof Error
+            ? requestError.message
+            : "Backend server is not connected. Please make sure the server is running on http://localhost:3001.";
 
-  function revealClue(clue: RevealedClue) {
-    if (controlsLocked || revealedClues.some((item) => item.id === clue.id)) return
-    setRevealedClues((items) => [...items, clue])
-    if (condition === 'chat') {
-      void sendPatientMessage(clue.detail)
+      setError(message);
+    } finally {
+      setIsThinking(false);
     }
   }
 
   function handleOpening() {
-    revealClue({
-      id: 'opening',
-      label: 'Opening complaint',
-      detail: currentCase.opening,
-      source: 'opening',
-    })
-  }
+    if (
+      controlsLocked ||
+      !selectedCase ||
+      revealedClues.some((item) => item.id === "opening")
+    ) {
+      return;
+    }
 
-  function handleRevealSymptom(symptom: SymptomItem) {
-    revealClue({
-      id: `symptom-${symptom.id}`,
-      label: symptom.label,
-      detail: symptom.detail,
-      source: 'symptom',
-    })
+    setRevealedClues((items) => [
+      ...items,
+      {
+        id: "opening",
+        label: "Opening complaint",
+        detail: EXPERIMENT_OPENING_QUESTION,
+        source: "opening",
+      },
+    ]);
+
+    void sendPatientMessage(EXPERIMENT_OPENING_QUESTION);
   }
 
   function handleConclude() {
     if (doctorTurns >= MIN_TURNS) {
-      setSessionConcluded(true)
+      setSessionConcluded(true);
     }
   }
 
   return (
     <div className="app-shell">
       <TopBar isThinking={isThinking} condition={condition} />
-      <main className="triage-layout">
-        <LeftPanel
-          condition={condition}
-          messages={conversationHistory}
-          canConclude={doctorTurns >= MIN_TURNS}
-          disabled={controlsLocked}
-          isThinking={isThinking}
-          error={error}
-          onOpening={handleOpening}
-          onReset={() => resetTrial()}
-          onConclude={handleConclude}
-          onSend={sendPatientMessage}
-        />
-        <BodyPanel
-          currentCase={currentCase}
-          revealedSymptoms={revealedSymptoms}
-          disabled={controlsLocked}
-          onRevealSymptom={handleRevealSymptom}
-        />
-      </main>
-      {sessionConcluded ? (
-        <ConclusionPanel currentCase={currentCase} doctorTurns={doctorTurns} />
+
+      {caseError ? <div className="case-status-banner">{caseError}</div> : null}
+
+      {isLoadingCases || !selectedCase ? (
+        <main className="triage-layout loading-layout">
+          <section className="chat-panel">Loading cases...</section>
+        </main>
+      ) : (
+        <main className="triage-layout">
+          <LeftPanel
+            condition={condition}
+            messages={conversationHistory}
+            canConclude={doctorTurns >= MIN_TURNS}
+            disabled={controlsLocked}
+            isThinking={isThinking}
+            error={error}
+            onOpening={handleOpening}
+            onReset={() => resetTrial()}
+            onConclude={handleConclude}
+            onSend={sendPatientMessage}
+          />
+
+          <BodyPanel
+            currentCase={selectedCase}
+            condition={condition}
+            revealedClues={revealedClues}
+            onReveal={(clue) => setRevealedClues((items) => [...items, clue])}
+          />
+        </main>
+      )}
+
+      {sessionConcluded && selectedCase ? (
+        <ConclusionPanel currentCase={selectedCase} doctorTurns={doctorTurns} />
       ) : null}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

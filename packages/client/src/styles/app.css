@@ -101,7 +101,10 @@ select {
 
 .triage-layout {
   display: grid;
-  grid-template-columns: minmax(520px, 1.25fr) minmax(360px, 0.8fr) minmax(300px, 0.55fr);
+  grid-template-columns:
+    minmax(480px, 1fr)
+    minmax(320px, 0.55fr)
+    minmax(300px, 0.45fr);
   gap: 12px;
   height: calc(100vh - 118px);
   max-width: 1440px;
@@ -114,6 +117,7 @@ select {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
   min-height: 0;
   padding: 12px;
   overflow: hidden;
@@ -171,6 +175,20 @@ select {
   border-radius: 4px;
   background: #fff1f2;
   color: #9f1239;
+}
+
+.case-status-banner {
+  max-width: 1440px;
+  margin: 0 auto 14px;
+  padding: 10px 12px;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.loading-layout {
+  grid-template-columns: 1fr;
 }
 
 .message-list {
@@ -333,6 +351,7 @@ button:disabled {
 }
 
 .body-card {
+  min-width: 0;
   padding: 12px;
 }
 
@@ -346,90 +365,103 @@ button:disabled {
 
 .panel-heading {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 6px;
+  min-width: 0;
+}
+
+.panel-heading h2 {
+  flex: 0 0 auto;
 }
 
 .panel-heading p {
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
   color: #64748b;
   font-size: 0.82rem;
   line-height: 1.2;
+  text-align: right;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
 }
 
 .abdominal-map {
-  position: relative;
-  min-height: 0;
+
   width: 100%;
+
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  display: grid;
+
+  place-items: center;
+
   overflow: visible;
-  border: 1px solid #e3ded3;
-  border-radius: 5px;
-  background: #fdf8ef;
+
 }
 
-.body-image-wrapper {
+.body-svg-wrapper {
+
   position: relative;
+
+  width: min(100%, 540px);
+
   height: 100%;
-  aspect-ratio: 874 / 1249;
-  max-width: 100%;
-  overflow: visible;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
+  overflow: visible;
+
+  margin: 0 auto;
+
+  transform: translateX(-140px);
+
 }
 
-.body-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.human-body {
+
+  height: 108%;
+
+  width: auto;
+
+  max-height: none;
+
+  fill: var(--skin-tone, #eac0a1);
+
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+
 }
 
 .body-hotspot-dot {
   position: absolute;
-  z-index: 3;
+  transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
   padding: 0;
-  border: 2px solid #ffffff;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
   border-radius: 999px;
+  border: 2px solid white;
   background: #dc2626;
   box-shadow:
-    0 0 0 4px rgba(220, 38, 38, 0.18),
-    0 3px 10px rgba(0, 0, 0, 0.2);
+    0 0 0 2px rgba(220, 38, 38, 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.18);
   cursor: pointer;
-  transform: translate(-50%, -50%);
-  transition:
-    background 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
+  z-index: 3;
 }
 
 .body-hotspot-dot:hover,
 .body-hotspot-dot:focus-visible {
-  transform: translate(-50%, -50%) scale(1.25);
-}
-
-.body-hotspot-dot:focus-visible {
-  outline: 2px solid #1f6fbd;
-  outline-offset: 3px;
-}
-
-.body-hotspot-dot.revealed {
-  background: #16a34a;
-  box-shadow:
-    0 0 0 4px rgba(22, 163, 74, 0.18),
-    0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.body-hotspot-dot:disabled {
-  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.15);
+  outline: none;
 }
 
 .body-hotspot-tooltip {
@@ -466,15 +498,89 @@ button:disabled {
   color: #17623b;
 }
 
+.triage-decision-card {
+  flex: 0 0 auto;
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.small-muted {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.triage-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.triage-option {
+  width: 100%;
+  border: 1px solid #c9d3df;
+  background: #f8fbff;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  color: #172033;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.triage-option:hover {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: #eff6ff;
+}
+
+.triage-option.selected {
+  border-color: #1f6fbd;
+  background: rgba(37, 99, 235, 0.12);
+  color: #1f6fbd;
+  font-weight: 700;
+}
+
+.triage-reasoning-input {
+  width: 100%;
+  min-height: 92px;
+  max-height: 140px;
+  resize: vertical;
+  background: #f8fbff;
+  border: 1px solid #c9d3df;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #172033;
+  outline: none;
+}
+
+.triage-reasoning-input:focus {
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+.full-btn {
+  width: 100%;
+  background: #1f6fbd;
+  color: #ffffff;
+  cursor: pointer;
+}
+
 .info-panel {
   width: 100%;
-  max-width: 360px;
+  max-width: none;
   display: flex;
   flex-direction: column;
   gap: 12px;
   height: 100%;
+  min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .info-card {
@@ -491,26 +597,11 @@ button:disabled {
   line-height: 1.15;
 }
 
-.case-details {
-  display: grid;
-  gap: 6px;
-  margin: 7px 0 0;
-  font-size: 0.88rem;
-}
-
-.case-details div {
-  display: grid;
-  gap: 2px;
-}
-
-.case-details dt {
-  color: #4b5563;
-  font-weight: 700;
-}
-
-.case-details dd {
+.fixed-case-label {
   margin: 0;
-  color: #263444;
+  color: #4b5563;
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 .symptom-grid {
@@ -617,7 +708,7 @@ button:disabled {
     min-height: 340px;
   }
 
-  .body-image-wrapper {
+  .body-svg-wrapper {
     max-height: 100%;
   }
 
@@ -629,4 +720,51 @@ button:disabled {
     height: auto;
     overflow: visible;
   }
+}
+
+.info-card.patient-card {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.patient-card-scroll {
+  flex: 1 1 auto;
+  display: block;
+  margin-top: 8px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  color: #263444;
+  font-size: 0.88rem;
+}
+
+.patient-card-scroll p {
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+
+.patient-card-scroll strong {
+  color: #111827;
+}
+
+.patient-card-scroll .case-label {
+  font-weight: 700;
+  color: #475569;
+}
+
+.patient-card-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.patient-card-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.patient-card-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }

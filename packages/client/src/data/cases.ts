@@ -2,10 +2,12 @@ import type { TriageCase } from '../types/triage'
 
 export const MIN_TURNS = 3
 export const MAX_TURNS = 6
+export const EXPERIMENT_OPENING_QUESTION =
+  'I have stomach pain and feel nauseous. What should I ask or check to decide what to do?'
 
 export const CASES: TriageCase[] = [
   {
-    id: 'gastroenteritis',
+    caseId: 'gastroenteritis',
     label: 'Case 1: Viral gastroenteritis pattern',
     target: 'Self-care',
     opening:
@@ -55,7 +57,7 @@ export const CASES: TriageCase[] = [
     ].map(([id, label, detail]) => ({ id, label, detail })),
   },
   {
-    id: 'diverticulitis',
+    caseId: 'diverticulitis',
     label: 'Case 2: Stable left-lower abdominal pain',
     target: 'Routine GP',
     opening:
@@ -96,7 +98,7 @@ export const CASES: TriageCase[] = [
     ].map(([id, label, detail]) => ({ id, label, detail })),
   },
   {
-    id: 'appendicitis',
+    caseId: 'appendicitis',
     label: 'Case 3: Early appendicitis pattern',
     target: 'Urgent Primary Care',
     opening:
@@ -133,7 +135,7 @@ export const CASES: TriageCase[] = [
     ].map(([id, label, detail]) => ({ id, label, detail })),
   },
   {
-    id: 'bowel_obstruction',
+    caseId: 'bowel_obstruction',
     label: 'Case 4: Small-bowel obstruction pattern',
     target: 'A&E',
     opening:
@@ -166,7 +168,7 @@ export const CASES: TriageCase[] = [
     ].map(([id, label, detail]) => ({ id, label, detail })),
   },
   {
-    id: 'gi_bleed',
+    caseId: 'gi_bleed',
     label: 'Case 5: Upper GI bleed / ulcer complication',
     target: 'Ambulance',
     opening:

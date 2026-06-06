@@ -1,28 +1,24 @@
-import type { SymptomItem, TriageCase } from '../types/triage'
+import type { TriageCase } from '../types/triage'
+import type { Condition } from '../utils/condition'
 import { CaseCard } from './CaseCard'
-import { SymptomRevealCard } from './SymptomRevealCard'
+import { TriageDecisionCard } from './TriageDecisionCard'
 
 type InfoPanelProps = {
   currentCase: TriageCase
-  revealedSymptoms: Set<string>
-  disabled: boolean
-  onRevealSymptom: (symptom: SymptomItem) => void
+  condition: Condition
 }
 
 export function InfoPanel({
   currentCase,
-  revealedSymptoms,
-  disabled,
-  onRevealSymptom,
+  condition,
 }: InfoPanelProps) {
   return (
     <div className="info-panel">
-      <CaseCard currentCase={currentCase} />
-      <SymptomRevealCard
-        symptoms={currentCase.symptoms}
-        revealedIds={revealedSymptoms}
-        disabled={disabled}
-        onReveal={onRevealSymptom}
+      <CaseCard />
+      <TriageDecisionCard
+        key={currentCase.caseId}
+        currentCase={currentCase}
+        condition={condition}
       />
     </div>
   )

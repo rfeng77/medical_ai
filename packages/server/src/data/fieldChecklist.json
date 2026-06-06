@@ -1,0 +1,106 @@
+{
+  "fields": [
+    {
+      "field": "pain_location",
+      "category": "pain pattern",
+      "neutralLabel": "where the pain is located",
+      "priority": 5
+    },
+    {
+      "field": "pain_quality",
+      "category": "pain pattern",
+      "neutralLabel": "what the pain feels like",
+      "priority": 3
+    },
+    {
+      "field": "pain_migration",
+      "category": "pain pattern",
+      "neutralLabel": "whether the pain changed location over time",
+      "priority": 5
+    },
+    {
+      "field": "movement_pain",
+      "category": "pain pattern",
+      "neutralLabel": "whether movement changes the pain",
+      "priority": 5
+    },
+    {
+      "field": "duration",
+      "category": "time course",
+      "neutralLabel": "how long symptoms have been present",
+      "priority": 3
+    },
+    {
+      "field": "fever",
+      "category": "systemic symptoms",
+      "neutralLabel": "whether there are fever-like symptoms",
+      "priority": 4
+    },
+    {
+      "field": "vomiting",
+      "category": "digestive symptoms",
+      "neutralLabel": "whether there is nausea or vomiting",
+      "priority": 4
+    },
+    {
+      "field": "diarrhea",
+      "category": "digestive symptoms",
+      "neutralLabel": "whether there is diarrhea",
+      "priority": 4
+    },
+    {
+      "field": "bowel_movement",
+      "category": "digestive symptoms",
+      "neutralLabel": "whether bowel movements have changed",
+      "priority": 3
+    },
+    {
+      "field": "bleeding",
+      "category": "red-flag symptoms",
+      "neutralLabel": "whether there is bleeding or black stool",
+      "priority": 5
+    },
+    {
+      "field": "hydration",
+      "category": "hydration and stability",
+      "neutralLabel": "whether fluid intake and urination seem normal",
+      "priority": 4
+    },
+    {
+      "field": "urination",
+      "category": "urinary symptoms",
+      "neutralLabel": "whether urination has changed",
+      "priority": 3
+    },
+    {
+      "field": "pregnancy",
+      "category": "medical context",
+      "neutralLabel": "whether pregnancy is relevant",
+      "priority": 5
+    },
+    {
+      "field": "dizziness",
+      "category": "red-flag symptoms",
+      "neutralLabel": "whether there is dizziness or fainting",
+      "priority": 5
+    },
+    {
+      "field": "medication",
+      "category": "medical context",
+      "neutralLabel": "whether medication use is relevant",
+      "priority": 4
+    },
+    {
+      "field": "medical_history",
+      "category": "medical context",
+      "neutralLabel": "whether prior conditions or surgeries are relevant",
+      "priority": 3
+    },
+    {
+      "field": "red_flags",
+      "category": "red-flag symptoms",
+      "neutralLabel": "whether any severe or rapidly worsening symptoms are present",
+      "priority": 5
+    }
+  ]
+}

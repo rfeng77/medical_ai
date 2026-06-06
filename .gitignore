@@ -1,9 +1,11 @@
 # dependencies (bun install)
 node_modules
+**/node_modules
 
 # output
 out
 dist
+**/dist
 *.tgz
 
 # code coverage
@@ -17,10 +19,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # dotenv environment variable files
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
 
 # caches
 .eslintcache
@@ -32,3 +35,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+.env
+.env.*
+**/.env
+**/.env.*

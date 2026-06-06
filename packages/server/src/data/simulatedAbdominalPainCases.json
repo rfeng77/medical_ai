@@ -1,0 +1,205 @@
+{
+  "cases": [
+    {
+      "caseId": "case_viral_gastroenteritis",
+      "label": "Simulated Case 1",
+      "openingComplaint": "I have stomach pain and feel nauseous.",
+      "groundTruth": {
+        "diagnosis": "viral gastroenteritis pattern",
+        "targetTriage": "Self-care"
+      },
+      "bodyMapClues": {
+        "upper_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The upper abdomen feels mildly crampy, but the pain is not sharp or fixed."
+        },
+        "lower_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The lower abdomen has mild cramping but no severe focal pain."
+        },
+        "right_lower_quadrant": {
+          "field": "pain_location",
+          "participantFacingText": "There is no fixed right-lower abdominal pain."
+        },
+        "left_lower_quadrant": {
+          "field": "pain_location",
+          "participantFacingText": "There is no focal left-lower abdominal tenderness."
+        },
+        "diffuse_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The discomfort is diffuse and crampy across the abdomen."
+        }
+      },
+      "symptomClues": {
+        "duration": {
+          "field": "duration",
+          "participantFacingText": "Symptoms started about 10 hours ago and are not rapidly worsening."
+        },
+        "vomiting": {
+          "field": "vomiting",
+          "participantFacingText": "There was one episode of vomiting, but small sips of water can stay down."
+        },
+        "diarrhea": {
+          "field": "diarrhea",
+          "participantFacingText": "There is watery diarrhea."
+        },
+        "bleeding": {
+          "field": "bleeding",
+          "participantFacingText": "There is no visible blood and no black stool."
+        },
+        "hydration": {
+          "field": "hydration",
+          "participantFacingText": "Urination is still normal, though the mouth feels slightly dry."
+        }
+      },
+      "structuredFeatures": {
+        "pain_location": "diffuse_abdomen",
+        "pain_quality": "crampy",
+        "duration": "10_hours",
+        "vomiting": "once",
+        "diarrhea": true,
+        "bleeding": false,
+        "hydration": "mild_dryness"
+      },
+      "fieldPriority": {
+        "pain_location": 5,
+        "duration": 3,
+        "vomiting": 3,
+        "diarrhea": 5,
+        "bleeding": 5,
+        "hydration": 4,
+        "fever": 4,
+        "red_flags": 5
+      }
+    },
+    {
+      "caseId": "case_appendicitis_pattern",
+      "label": "Simulated Case 2",
+      "openingComplaint": "I have stomach pain and nausea. At first it felt vague, but now I am more worried.",
+      "groundTruth": {
+        "diagnosis": "appendicitis-like pattern",
+        "targetTriage": "A&E"
+      },
+      "bodyMapClues": {
+        "upper_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The upper abdomen is not the main pain location."
+        },
+        "periumbilical": {
+          "field": "pain_migration",
+          "participantFacingText": "The pain started around the belly button earlier."
+        },
+        "right_lower_quadrant": {
+          "field": "pain_location",
+          "participantFacingText": "The pain is now more fixed in the right lower abdomen."
+        },
+        "left_lower_quadrant": {
+          "field": "pain_location",
+          "participantFacingText": "The left lower abdomen is not the main pain location."
+        },
+        "diffuse_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The whole abdomen is not rigid, but the right lower side feels worse."
+        }
+      },
+      "symptomClues": {
+        "movement_pain": {
+          "field": "movement_pain",
+          "participantFacingText": "Walking, coughing, or bumps make the pain feel worse."
+        },
+        "duration": {
+          "field": "duration",
+          "participantFacingText": "The pain started about 8 hours ago."
+        },
+        "fever": {
+          "field": "fever",
+          "participantFacingText": "There is a mild feverish feeling."
+        },
+        "vomiting": {
+          "field": "vomiting",
+          "participantFacingText": "There is nausea and low appetite, but vomiting is not the main symptom."
+        },
+        "bleeding": {
+          "field": "bleeding",
+          "participantFacingText": "There is no black stool and no visible blood."
+        }
+      },
+      "structuredFeatures": {
+        "pain_location": "right_lower_quadrant",
+        "pain_migration": "periumbilical_to_right_lower_quadrant",
+        "movement_pain": true,
+        "duration": "8_hours",
+        "fever": "mild",
+        "vomiting": "nausea_low_appetite",
+        "bleeding": false
+      },
+      "fieldPriority": {
+        "pain_location": 5,
+        "pain_migration": 5,
+        "movement_pain": 5,
+        "duration": 3,
+        "fever": 4,
+        "vomiting": 4,
+        "bleeding": 5,
+        "red_flags": 5
+      }
+    },
+    {
+      "caseId": "case_gi_bleed_pattern",
+      "label": "Simulated Case 3",
+      "openingComplaint": "I have upper stomach pain and feel dizzy.",
+      "groundTruth": {
+        "diagnosis": "upper gastrointestinal bleeding pattern",
+        "targetTriage": "Ambulance"
+      },
+      "bodyMapClues": {
+        "upper_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "There is burning upper abdominal pain."
+        },
+        "lower_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The lower abdomen is not the main pain location."
+        },
+        "diffuse_abdomen": {
+          "field": "pain_location",
+          "participantFacingText": "The pain is not mainly a diffuse cramping pattern."
+        }
+      },
+      "symptomClues": {
+        "bleeding": {
+          "field": "bleeding",
+          "participantFacingText": "The stool looks black, sticky, and unusually foul-smelling."
+        },
+        "vomiting": {
+          "field": "vomiting",
+          "participantFacingText": "There was dark vomit that looked like coffee grounds."
+        },
+        "dizziness": {
+          "field": "dizziness",
+          "participantFacingText": "Standing up causes lightheadedness."
+        },
+        "medication": {
+          "field": "medication",
+          "participantFacingText": "There has been frequent ibuprofen use, and there is also a blood thinner."
+        }
+      },
+      "structuredFeatures": {
+        "pain_location": "upper_abdomen",
+        "pain_quality": "burning",
+        "bleeding": true,
+        "vomiting": "coffee_ground",
+        "dizziness": true,
+        "medication": "nsaid_and_blood_thinner"
+      },
+      "fieldPriority": {
+        "pain_location": 4,
+        "bleeding": 5,
+        "vomiting": 5,
+        "dizziness": 5,
+        "medication": 4,
+        "red_flags": 5
+      }
+    }
+  ]
+}

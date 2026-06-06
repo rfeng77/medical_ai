@@ -1,23 +1,42 @@
-import type { TriageCase } from '../types/triage'
+import { EXPERIMENT_OPENING_QUESTION } from "../data/cases";
 
-type CaseCardProps = {
-  currentCase: TriageCase
-}
-
-export function CaseCard({ currentCase }: CaseCardProps) {
+export function CaseCard() {
   return (
-    <section className="info-card case-card">
-      <h2>Case Details</h2>
-      <dl className="case-details">
-        <div>
-          <dt>Opening</dt>
-          <dd>{currentCase.opening}</dd>
-        </div>
-        <div>
-          <dt>Patient card</dt>
-          <dd>{currentCase.patientCard}</dd>
-        </div>
-      </dl>
-    </section>
-  )
+    <article className="info-card patient-card">
+      <h2>Patient Card</h2>
+
+      <div className="patient-card-scroll">
+        <p className="case-label">Case 1</p>
+
+        <p>
+          <strong>Patient card</strong>
+        </p>
+
+        <p>
+          You are role-playing as a patient. You have stomach pain and mild
+          nausea.
+        </p>
+
+        <p>
+          <strong>Your task:</strong>
+        </p>
+
+        <p>
+          Start by sending the opening question below to the AI. You may ask
+          follow-up questions or click the body map to reveal more details. Do
+          not invent symptoms or details. Only use information shown on the
+          screen or revealed by the system.
+        </p>
+
+        <p>
+          <strong>Opening question:</strong>
+        </p>
+
+        <p>
+          I have stomach pain and feel nauseous. What should I ask or check to
+          decide what to do?
+        </p>
+      </div>
+    </article>
+  );
 }
