@@ -1,5 +1,3 @@
-import { EXPERIMENT_OPENING_QUESTION } from "../data/cases";
-
 export function CaseCard() {
   return (
     <article className="info-card patient-card">
