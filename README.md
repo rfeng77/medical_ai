@@ -1,8 +1,8 @@
 # Medical Dialogue Triage System
 
-This project is a prototype medical dialogue triage system that simulates how users describe symptoms and how an AI assistant gathers information, estimates urgency, and supports triage decision-making.
+This project explores how AI can support people when they seek medical help through conversation. The goal is to study how an AI assistant can reduce uncertainty, ask for missing information, and help users work toward a triage decision together.
 
-The system focuses on symptom disclosure, missing-information detection, uncertainty tracking, and controlled medical advice. It is designed for research on human-AI interaction in medical triage conversations, especially how AI responses influence perceived urgency, perceived risk, and user confidence during multi-turn dialogue.
+The system simulates multi-turn medical dialogue between a user and an AI assistant. During the conversation, the AI tracks symptom information, uncertainty, perceived urgency, perceived risk, and user confidence to better understand how people make medical support decisions with AI.
 
 ## Install dependencies
 
