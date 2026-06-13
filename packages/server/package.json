@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "start": "bun src/index.ts"
+    "start": "bun src/index.ts",
+    "test:ai": "bun src/testAiPipeline.ts",
+    "test:ai:interactive": "bun src/testAiInteractive.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

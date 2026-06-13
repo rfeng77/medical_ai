@@ -2,6 +2,7 @@ export type ChatApiRequest = {
   participantId: string
   caseId: string
   condition: 'chat' | 'reasoning'
+  sessionId: string
   message: string
 }
 
@@ -36,15 +37,31 @@ export type RevealApiRequest = {
   participantId: string
   caseId: string
   condition: 'chat' | 'reasoning'
-  clueId: string
+  sessionId: string
+  regionKey: string
 }
 
 export type DecisionApiRequest = {
   participantId: string
   caseId: string
   condition: 'chat' | 'reasoning'
-  decision: string
-  explanation?: string
+  sessionId: string
+  selectedDecision: string
+  reasoning: string
+}
+
+export type PostTurnRatingRequest = {
+  participantId: string
+  caseId: string
+  condition: 'chat' | 'reasoning'
+  sessionId: string
+  turnIndex: number
+  messageId?: string
+  doctorMessageId?: string
+  perceivedUrgency: number
+  perceivedRisk: number
+  confidence: number
+  timestamp?: string
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
@@ -99,4 +116,10 @@ export async function submitDecision(
   payload: DecisionApiRequest,
 ): Promise<unknown> {
   return postJson('/api/decision', payload)
+}
+
+export async function savePostTurnRatings(
+  payload: PostTurnRatingRequest,
+): Promise<unknown> {
+  return postJson('/api/ratings', payload)
 }

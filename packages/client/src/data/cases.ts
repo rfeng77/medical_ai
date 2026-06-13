@@ -1,7 +1,7 @@
 import type { TriageCase } from '../types/triage'
 
 export const MIN_TURNS = 3
-export const MAX_TURNS = 6
+export const MAX_TURNS = 20
 export const EXPERIMENT_OPENING_QUESTION =
   'I have stomach pain and feel nauseous. What should I ask or check to decide what to do?'
 

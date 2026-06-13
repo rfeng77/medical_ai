@@ -4,12 +4,6 @@ export function CaseCard() {
       <h2>Patient Card</h2>
 
       <div className="patient-card-scroll">
-        <p className="case-label">Case 1</p>
-
-        <p>
-          <strong>Patient card</strong>
-        </p>
-
         <p>
           You are role-playing as a patient. You have stomach pain and mild
           nausea.

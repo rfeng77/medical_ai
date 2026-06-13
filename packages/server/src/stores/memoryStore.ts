@@ -1,31 +1,50 @@
-import type { Condition, ParticipantMemory } from "../types/experiment";
+import type {
+  Condition,
+  ParticipantMemory
+} from "../types/experiment";
 
-const memoryByParticipantCase = new Map<string, ParticipantMemory>();
+const memoryBySession = new Map<string, ParticipantMemory>();
 
-export function getMemoryKey(participantId: string, caseId: string): string {
-  return `${participantId}:${caseId}`;
+export function getMemoryKey(sessionId: string): string {
+  return sessionId;
 }
 
-export function getMemory(participantId: string, caseId: string): ParticipantMemory | undefined {
-  return memoryByParticipantCase.get(getMemoryKey(participantId, caseId));
+export function getMemory(sessionId: string): ParticipantMemory | undefined {
+  return memoryBySession.get(getMemoryKey(sessionId));
 }
 
 export function saveMemory(memory: ParticipantMemory): ParticipantMemory {
-  memoryByParticipantCase.set(getMemoryKey(memory.participantId, memory.caseId), memory);
+  if (!memory.sessionId) {
+    throw new Error("Cannot save participant memory without a sessionId.");
+  }
+
+  memoryBySession.set(getMemoryKey(memory.sessionId), memory);
   return memory;
 }
 
-export function createMemory(
-  participantId: string,
-  caseId: string,
-  condition: Condition
-): ParticipantMemory {
-  const memory: ParticipantMemory = {
+export function createEmptyParticipantMemory({
+  participantId,
+  caseId,
+  condition,
+  sessionId,
+}: {
+  participantId: string;
+  caseId: string;
+  condition: string;
+  sessionId: string;
+}): ParticipantMemory {
+  return {
     participantId,
     caseId,
-    condition,
+    condition: condition as Condition,
+    sessionId,
+    disclosedSymptoms: {
+      symptoms: [],
+      symptomMap: {}
+    },
     aiVisibleFields: {},
     fieldEvidence: {},
+    decisionTreeVisibleFeatures: [],
     chatHistory: [],
     turnCount: 0,
     latestCoverageRatio: 0,
@@ -33,6 +52,44 @@ export function createMemory(
     latestMissingInformationCategories: [],
     latestShouldSuggestMoreSearch: true
   };
+}
 
+export function createMemory(
+  participantId: string,
+  caseId: string,
+  condition: Condition,
+  sessionId: string
+): ParticipantMemory {
+  const memory = createEmptyParticipantMemory({
+    participantId,
+    caseId,
+    condition,
+    sessionId
+  });
   return saveMemory(memory);
+}
+
+export function getOrCreateMemory({
+  participantId,
+  caseId,
+  condition,
+  sessionId
+}: {
+  participantId: string;
+  caseId: string;
+  condition: Condition;
+  sessionId: string;
+}): ParticipantMemory {
+  const existingMemory = getMemory(sessionId);
+
+  if (
+    existingMemory &&
+    existingMemory.participantId === participantId &&
+    existingMemory.caseId === caseId &&
+    existingMemory.condition === condition
+  ) {
+    return existingMemory;
+  }
+
+  return createMemory(participantId, caseId, condition, sessionId);
 }

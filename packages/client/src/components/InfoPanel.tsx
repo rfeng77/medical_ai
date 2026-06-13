@@ -6,11 +6,15 @@ import { TriageDecisionCard } from './TriageDecisionCard'
 type InfoPanelProps = {
   currentCase: TriageCase
   condition: Condition
+  participantId: string
+  sessionId: string
 }
 
 export function InfoPanel({
   currentCase,
   condition,
+  participantId,
+  sessionId,
 }: InfoPanelProps) {
   return (
     <div className="info-panel">
@@ -19,6 +23,8 @@ export function InfoPanel({
         key={currentCase.caseId}
         currentCase={currentCase}
         condition={condition}
+        participantId={participantId}
+        sessionId={sessionId}
       />
     </div>
   )

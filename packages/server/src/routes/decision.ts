@@ -1,7 +1,6 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
-import { getOrCreateMemory } from "../agents/MemoryManagerAgent";
-import { logExperimentEvent } from "../agents/LoggingAgent";
+import { getOrCreateMemory } from "../stores/memoryStore";
 import type { ClinicalField, DecisionRequest } from "../types/experiment";
 
 export const decisionRouter = Router();
@@ -42,16 +41,16 @@ function joinWithAnd(items: string[]): string {
 
 decisionRouter.post("/", (req: Request<unknown, unknown, DecisionRequest>, res: Response) => {
   try {
-    const { participantId, caseId, condition, selectedDecision, reasoning } = req.body;
+    const { participantId, caseId, condition, sessionId, selectedDecision, reasoning } = req.body;
 
-    if (!participantId || !caseId || !condition || !selectedDecision || !reasoning) {
+    if (!participantId || !caseId || !condition || !sessionId || !selectedDecision || !reasoning) {
       res.status(400).json({
-        error: "participantId, caseId, condition, selectedDecision, and reasoning are required."
+        error: "participantId, caseId, condition, sessionId, selectedDecision, and reasoning are required."
       });
       return;
     }
 
-    const memory = getOrCreateMemory(participantId, caseId, condition);
+    const memory = getOrCreateMemory({ participantId, caseId, condition, sessionId });
     const disclosedFields = Object.keys(memory.aiVisibleFields).map(
       (field) => fieldLabels[field as ClinicalField] ?? field
     );
@@ -64,19 +63,16 @@ decisionRouter.post("/", (req: Request<unknown, unknown, DecisionRequest>, res: 
       groundTruthHidden: true
     };
 
-    logExperimentEvent({
+    console.log("triage_decision", {
       participantId,
       caseId,
       condition,
-      eventType: "triage_decision",
-      payload: {
-        selectedDecision,
-        reasoning,
-        disclosedFields: memory.aiVisibleFields,
-        latestCoverageRatio: memory.latestCoverageRatio,
-        latestUncertaintyLevel: memory.latestUncertaintyLevel,
-        groundTruthHidden: true
-      }
+      sessionId,
+      selectedDecision,
+      reasoning,
+      disclosedFields: memory.aiVisibleFields,
+      latestDecisionResult: memory.latestDecisionResult,
+      groundTruthHidden: true
     });
 
     res.json(response);

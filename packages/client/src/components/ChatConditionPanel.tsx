@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { ChatMessage as ChatMessageType } from '../types/triage'
 import { ChatInput } from './ChatInput'
 import { MessageList } from './MessageList'
@@ -13,6 +14,7 @@ export type ChatConditionPanelProps = {
   onReset: () => void
   onConclude: () => void
   onSend: (message: string) => void
+  ratingPanel?: ReactNode
 }
 
 export function ChatConditionPanel({
@@ -25,6 +27,7 @@ export function ChatConditionPanel({
   onReset,
   onConclude,
   onSend,
+  ratingPanel,
 }: ChatConditionPanelProps) {
   return (
     <section className="chat-panel">
@@ -37,6 +40,7 @@ export function ChatConditionPanel({
         onReset={onReset}
         onConclude={onConclude}
       />
+      {ratingPanel}
       <ChatInput disabled={disabled} onSend={onSend} />
     </section>
   )

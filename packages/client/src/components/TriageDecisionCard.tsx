@@ -16,9 +16,16 @@ type TriageOption = (typeof TRIAGE_OPTIONS)[number]
 type TriageDecisionCardProps = {
   currentCase: TriageCase
   condition: Condition
+  participantId: string
+  sessionId: string
 }
 
-export function TriageDecisionCard({ currentCase, condition }: TriageDecisionCardProps) {
+export function TriageDecisionCard({
+  currentCase,
+  condition,
+  participantId,
+  sessionId,
+}: TriageDecisionCardProps) {
   const [selectedDecision, setSelectedDecision] = useState<TriageOption | null>(null)
   const [reasoning, setReasoning] = useState('')
   const [saveStatus, setSaveStatus] = useState<string | null>(null)
@@ -30,11 +37,12 @@ export function TriageDecisionCard({ currentCase, condition }: TriageDecisionCar
 
     try {
       await submitDecision({
-        participantId: 'test_web_001',
+        participantId,
         caseId: currentCase.caseId,
         condition,
-        decision: selectedDecision,
-        explanation: reasoning,
+        sessionId,
+        selectedDecision,
+        reasoning,
       })
       setSaveStatus('Decision saved.')
     } catch (requestError) {

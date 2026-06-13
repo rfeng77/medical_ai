@@ -1,14 +1,18 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { revealRouter } from "./routes/reveal";
 import casesRouter from "./routes/cases";
 import { chatRouter } from "./routes/chat";
 import { decisionRouter } from "./routes/decision";
-import { getParticipantLogs } from "./agents/LoggingAgent";
+import { ratingsRouter } from "./routes/ratings";
+import { getEventsByParticipant } from "./stores/eventLogStore";
 
-dotenv.config();
+const serverSrcDir = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(serverSrcDir, "../.env") });
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -20,6 +24,7 @@ app.use("/api/cases", casesRouter);
 app.use("/api/reveal", revealRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/decision", decisionRouter);
+app.use("/api/ratings", ratingsRouter);
 
 app.get("/", (_req, res) => {
   res.json({ status: "ok", service: "medical-triage-experiment-server" });
@@ -38,7 +43,7 @@ app.get("/api/logs/:participantId", (req, res) => {
 
   res.json({
     participantId,
-    events: getParticipantLogs(participantId),
+    events: getEventsByParticipant(participantId),
   });
 });
 

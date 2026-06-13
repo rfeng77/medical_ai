@@ -6,6 +6,8 @@ import { InfoPanel } from "./InfoPanel";
 type BodyPanelProps = {
   currentCase: TriageCase;
   condition: Condition;
+  participantId: string;
+  sessionId: string;
   revealedClues: RevealedClue[];
   onReveal: (clue: RevealedClue) => void;
 };
@@ -13,6 +15,8 @@ type BodyPanelProps = {
 export function BodyPanel({
   currentCase,
   condition,
+  participantId,
+  sessionId,
   revealedClues,
   onReveal,
 }: BodyPanelProps) {
@@ -25,11 +29,18 @@ export function BodyPanel({
         <BodyMap
           currentCase={currentCase}
           condition={condition}
+          participantId={participantId}
+          sessionId={sessionId}
           revealedClues={revealedClues}
           onReveal={onReveal}
         />
       </section>
-      <InfoPanel currentCase={currentCase} condition={condition} />
+      <InfoPanel
+        currentCase={currentCase}
+        condition={condition}
+        participantId={participantId}
+        sessionId={sessionId}
+      />
     </aside>
   );
 }

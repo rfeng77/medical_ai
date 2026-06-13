@@ -2,6 +2,8 @@ type GenerateGeminiResponseInput = {
   systemInstruction: string;
   userPrompt: string;
   temperature: number;
+  maxOutputTokens?: number;
+  responseMimeType?: "application/json" | "text/plain";
 };
 
 type GeminiResponse = {
@@ -15,6 +17,7 @@ type GeminiResponse = {
 };
 
 const retryableStatusCodes = new Set([429, 503]);
+const GEMINI_REQUEST_TIMEOUT_MS = 60_000;
 
 export class GeminiServiceError extends Error {
   errorType: string;
@@ -93,7 +96,9 @@ async function readGeminiErrorBody(response: Response): Promise<unknown> {
 export async function generateGeminiResponse({
   systemInstruction,
   userPrompt,
-  temperature
+  temperature,
+  maxOutputTokens = 500,
+  responseMimeType
 }: GenerateGeminiResponseInput): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
@@ -130,18 +135,27 @@ export async function generateGeminiResponse({
       },
       generationConfig: {
         temperature,
-        maxOutputTokens: 500
+        maxOutputTokens,
+        ...(responseMimeType ? { responseMimeType } : {})
       }
     };
 
     for (let attempt = 0; attempt <= 2; attempt += 1) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => {
+        controller.abort();
+      }, GEMINI_REQUEST_TIMEOUT_MS);
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-goog-api-key": apiKey
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
+        signal: controller.signal
+      }).finally(() => {
+        clearTimeout(timeout);
       });
 
       if (response.ok) {

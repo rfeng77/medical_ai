@@ -62,14 +62,21 @@
         "hydration": "mild_dryness"
       },
       "fieldPriority": {
-        "pain_location": 5,
+
+        "pain_location": 4,
+
+        "pain_quality": 4,
+
         "duration": 3,
-        "vomiting": 3,
+
+        "nausea": 3,
+
         "diarrhea": 5,
-        "bleeding": 5,
-        "hydration": 4,
-        "fever": 4,
-        "red_flags": 5
+
+        "hydration": 5,
+
+        "urination": 3
+
       }
     },
     {

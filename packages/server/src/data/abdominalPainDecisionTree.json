@@ -1,0 +1,267 @@
+{
+  "feature_aliases": {
+    "generic_abdominal_pain": ["stomach hurts", "belly hurts", "abdominal pain", "stomach pain", "belly pain", "tummy pain"],
+    "rlq_pain": ["right lower", "lower right", "rlq", "right side low", "lower-right"],
+    "llq_pain": ["left lower", "lower left", "llq", "lower-left"],
+    "upper_abdominal_pain": ["upper abdomen", "upper stomach", "upper belly"],
+    "epigastric_pain": ["epigastric", "burning upper", "upper middle", "upper central"],
+    "flank_or_groin_pain": ["flank", "groin", "side pain", "back to groin"],
+    "painful_bulge": ["bulge", "lump", "hernia"],
+    "migration": ["moved", "migrated", "started near the belly button", "started near belly button", "belly button then right"],
+    "movement_or_rebound": ["walking makes it worse", "movement makes it worse", "hurts to walk", "bumps hurt", "coughing hurts", "rebound"],
+    "vomiting_or_nausea": ["vomit", "vomiting", "throwing up", "nausea", "nauseous", "sick to my stomach"],
+    "nausea_vomiting": ["vomit", "vomiting", "throwing up", "nausea", "nauseous"],
+    "vomiting": ["vomit", "vomiting", "throwing up"],
+    "nausea": ["nausea", "nauseous", "sick to my stomach"],
+    "diarrhea": ["diarrhea", "watery stool", "loose stool", "loose stools"],
+    "watery_diarrhea": ["watery diarrhea", "watery stool", "watery stools"],
+    "diffuse_cramps": ["stomach cramps", "belly cramps", "cramps", "cramping"],
+    "crampy_pain": ["crampy", "cramping", "cramps"],
+    "fever": ["fever", "feverish", "chills"],
+    "high_fever": ["high fever", "very feverish", "shaking chills"],
+    "blood_in_stool": ["blood in stool", "bloody stool", "black stool", "bleeding", "coffee ground"],
+    "no_blood_in_stool": ["no blood", "no bleeding", "not bloody"],
+    "hydration_preserved": ["can still drink", "able to drink", "drinking water", "keeping fluids down"],
+    "dehydration": ["dehydrated", "dry mouth", "not peeing", "cannot drink", "can't drink", "unable to drink"],
+    "dizziness_syncope": ["dizzy", "faint", "fainted", "lightheaded", "passed out"],
+    "urinary_symptoms": ["burning pee", "burning urination", "painful urination", "urinary", "peeing often"],
+    "normal_urination": ["urine is normal", "urinating normally", "normal urine"],
+    "pregnancy_possible": ["pregnant", "pregnancy", "missed period"],
+    "severe_or_worsening": ["severe", "worst", "worsening", "unbearable"],
+    "constipation_or_no_stool": ["constipation", "constipated", "no stool", "can't poop", "cannot poop"],
+    "altered_bowel": ["diarrhea", "constipation", "bowel change", "loose stool"],
+    "burning_or_indigestion": ["burning", "heartburn", "indigestion", "acid"],
+    "medication_risk": ["ibuprofen", "nsaid", "blood thinner", "warfarin", "aspirin"]
+  },
+  "leaf_nodes": [
+    {
+      "node_id": "appendicitis_like",
+      "diagnosis_group": "Appendicitis-like urgent abdominal pain",
+      "triage_level": "A&E",
+      "source_diagnoses": ["appendicitis"],
+      "weighted_features": {
+        "migration": 4,
+        "rlq_pain": 4,
+        "movement_or_rebound": 3,
+        "vomiting_or_nausea": 2,
+        "fever": 1
+      },
+      "strong_positive_pattern": {
+        "all_of": ["rlq_pain", "movement_or_rebound"],
+        "any_of": ["migration", "vomiting_or_nausea", "fever"]
+      },
+      "stop_when": "Stop when right-lower abdominal pain plus movement/rebound pain is present with migration, nausea/vomiting, or fever.",
+      "if_not_stop_ask": ["Where is the pain strongest now, and does walking, coughing, or bumps make it worse?"]
+    },
+    {
+      "node_id": "gastroenteritis_like",
+      "diagnosis_group": "Viral or foodborne gastroenteritis-like illness",
+      "triage_level": "Self-care",
+      "source_diagnoses": ["viral gastroenteritis", "foodborne gastroenteritis"],
+      "weighted_features": {
+        "watery_diarrhea": 4,
+        "diffuse_cramps": 3,
+        "vomiting_or_nausea": 2,
+        "hydration_preserved": 3,
+        "no_blood_in_stool": 3
+      },
+      "strong_positive_pattern": {
+        "all_of": ["watery_diarrhea", "hydration_preserved", "no_blood_in_stool"],
+        "any_of": ["diffuse_cramps", "vomiting_or_nausea"]
+      },
+      "stop_when": "Stop when watery diarrhea is paired with cramps or nausea/vomiting and safety checks suggest hydration is preserved and there is no blood.",
+      "if_not_stop_ask": ["Do you have fever or blood in the stool, and are you able to keep fluids down?"]
+    },
+    {
+      "node_id": "gastroenteritis_needs_assessment",
+      "diagnosis_group": "Gastroenteritis-like illness with possible dehydration or red flags",
+      "triage_level": "Urgent Primary Care",
+      "source_diagnoses": ["gastroenteritis with dehydration concern", "invasive diarrheal illness"],
+      "weighted_features": {
+        "diarrhea": 3,
+        "vomiting": 3,
+        "fever": 2,
+        "blood_in_stool": 4,
+        "dehydration": 4,
+        "dizziness_syncope": 3
+      },
+      "strong_positive_pattern": {
+        "all_of": ["diarrhea"],
+        "any_of": ["blood_in_stool", "dehydration", "dizziness_syncope", "fever"]
+      },
+      "stop_when": "Stop when diarrhea is accompanied by blood, dehydration, dizziness/fainting, or fever.",
+      "if_not_stop_ask": ["Are you able to keep fluids down, and have you noticed fever, dizziness, or blood in the stool?"]
+    },
+    {
+      "node_id": "gi_bleed_emergency",
+      "diagnosis_group": "Possible gastrointestinal bleeding",
+      "triage_level": "A&E",
+      "source_diagnoses": ["upper gastrointestinal bleed", "lower gastrointestinal bleed"],
+      "weighted_features": {
+        "blood_in_stool": 5,
+        "dizziness_syncope": 4,
+        "upper_abdominal_pain": 2,
+        "medication_risk": 2,
+        "severe_or_worsening": 2
+      },
+      "strong_positive_pattern": {
+        "all_of": ["blood_in_stool"],
+        "any_of": ["dizziness_syncope", "upper_abdominal_pain", "medication_risk", "severe_or_worsening"]
+      },
+      "stop_when": "Emergency override when bleeding is paired with dizziness, upper abdominal pain, medication risk, or severe/worsening symptoms.",
+      "if_not_stop_ask": ["Have you noticed black or bloody stool, vomiting blood, dizziness, or fainting?"]
+    },
+    {
+      "node_id": "bowel_obstruction_emergency",
+      "diagnosis_group": "Possible bowel obstruction",
+      "triage_level": "A&E",
+      "source_diagnoses": ["bowel obstruction"],
+      "weighted_features": {
+        "severe_or_worsening": 3,
+        "vomiting": 4,
+        "constipation_or_no_stool": 4,
+        "diffuse_cramps": 2,
+        "dehydration": 2
+      },
+      "strong_positive_pattern": {
+        "all_of": ["vomiting", "constipation_or_no_stool"],
+        "any_of": ["severe_or_worsening", "diffuse_cramps", "dehydration"]
+      },
+      "stop_when": "Emergency override when vomiting occurs with inability to pass stool or marked constipation plus severe/worsening or dehydration features.",
+      "if_not_stop_ask": ["Are you passing stool or gas, and is the pain coming in waves or getting worse?"]
+    },
+    {
+      "node_id": "kidney_stone_or_urinary",
+      "diagnosis_group": "Kidney stone or urinary tract source",
+      "triage_level": "Urgent Primary Care",
+      "source_diagnoses": ["kidney stone", "urinary tract infection"],
+      "weighted_features": {
+        "flank_or_groin_pain": 4,
+        "urinary_symptoms": 3,
+        "vomiting_or_nausea": 2,
+        "fever": 3,
+        "severe_or_worsening": 2
+      },
+      "strong_positive_pattern": {
+        "all_of": ["flank_or_groin_pain"],
+        "any_of": ["urinary_symptoms", "vomiting_or_nausea", "fever", "severe_or_worsening"]
+      },
+      "stop_when": "Stop when flank/groin pain is paired with urinary symptoms, nausea/vomiting, fever, or severe pain.",
+      "if_not_stop_ask": ["Is the pain in the flank or moving toward the groin, and do you have burning, frequent urination, or fever?"]
+    },
+    {
+      "node_id": "hernia_emergency",
+      "diagnosis_group": "Painful abdominal or groin bulge",
+      "triage_level": "A&E",
+      "source_diagnoses": ["incarcerated hernia", "strangulated hernia"],
+      "weighted_features": {
+        "painful_bulge": 5,
+        "vomiting": 3,
+        "severe_or_worsening": 3,
+        "constipation_or_no_stool": 3
+      },
+      "strong_positive_pattern": {
+        "all_of": ["painful_bulge"],
+        "any_of": ["vomiting", "severe_or_worsening", "constipation_or_no_stool"]
+      },
+      "stop_when": "Emergency override when a painful bulge is paired with vomiting, severe/worsening pain, or inability to pass stool.",
+      "if_not_stop_ask": ["Do you have a painful bulge in the abdomen or groin, and can it be gently pushed back in?"]
+    },
+    {
+      "node_id": "upper_abdominal_or_pancreatic",
+      "diagnosis_group": "Upper abdominal pain needing prompt assessment",
+      "triage_level": "Urgent Primary Care",
+      "source_diagnoses": ["pancreatitis", "gallbladder inflammation", "peptic ulcer disease"],
+      "weighted_features": {
+        "upper_abdominal_pain": 4,
+        "epigastric_pain": 3,
+        "vomiting_or_nausea": 2,
+        "fever": 2,
+        "severe_or_worsening": 3,
+        "medication_risk": 1
+      },
+      "strong_positive_pattern": {
+        "any_two_of": ["upper_abdominal_pain", "epigastric_pain", "vomiting_or_nausea", "fever", "severe_or_worsening"]
+      },
+      "stop_when": "Stop when upper abdominal pain clusters with nausea/vomiting, fever, or severe/worsening symptoms.",
+      "if_not_stop_ask": ["Is the pain mainly in the upper abdomen, does it go through to the back, and are you vomiting or feverish?"]
+    },
+    {
+      "node_id": "diverticulitis_like",
+      "diagnosis_group": "Left-lower abdominal pain with bowel or fever features",
+      "triage_level": "Urgent Primary Care",
+      "source_diagnoses": ["diverticulitis", "colitis"],
+      "weighted_features": {
+        "llq_pain": 4,
+        "fever": 3,
+        "altered_bowel": 2,
+        "blood_in_stool": 3,
+        "severe_or_worsening": 2
+      },
+      "strong_positive_pattern": {
+        "all_of": ["llq_pain"],
+        "any_of": ["fever", "altered_bowel", "blood_in_stool", "severe_or_worsening"]
+      },
+      "stop_when": "Stop when left-lower abdominal pain is paired with fever, bowel change, bleeding, or worsening severity.",
+      "if_not_stop_ask": ["Is the pain mainly on the lower left, and have you had fever, bowel changes, or blood in the stool?"]
+    },
+    {
+      "node_id": "indigestion_or_gastritis_like",
+      "diagnosis_group": "Indigestion or gastritis-like upper abdominal discomfort",
+      "triage_level": "Routine GP",
+      "source_diagnoses": ["gastritis", "indigestion", "peptic irritation"],
+      "weighted_features": {
+        "epigastric_pain": 4,
+        "burning_or_indigestion": 4,
+        "hydration_preserved": 2,
+        "no_blood_in_stool": 3,
+        "medication_risk": 1
+      },
+      "strong_positive_pattern": {
+        "all_of": ["epigastric_pain", "burning_or_indigestion"],
+        "must_not_have": ["blood_in_stool", "dizziness_syncope"]
+      },
+      "stop_when": "Stop when burning/indigestion-like upper abdominal discomfort is present without disclosed bleeding or faintness.",
+      "if_not_stop_ask": ["Is the pain burning or indigestion-like, and have you noticed black stool, blood, dizziness, or fainting?"]
+    }
+  ],
+  "global_stopping_rule": {
+    "emergency_override": {
+      "stop_immediately_if_any_node_matches": ["gi_bleed_emergency", "bowel_obstruction_emergency", "hernia_emergency"]
+    },
+    "score_threshold": {
+      "primary_threshold": 0.8,
+      "score_formula": "matched_weight_for_leaf / total_weight_for_leaf"
+    },
+    "minimum_specificity": {
+      "minimum_high_weight_or_branch_defining_features": 2,
+      "high_weight_threshold": 3,
+      "unless_emergency_override_matches": true
+    },
+    "ambiguity": {
+      "within_top_score": 0.15,
+      "top_score_below": 0.9,
+      "action": "do_not_stop_ask_separating_question"
+    }
+  },
+  "overlap_and_disambiguation_rules": [
+    {
+      "when_features_present": ["generic_abdominal_pain", "vomiting_or_nausea"],
+      "when_features_missing_any": ["rlq_pain", "upper_abdominal_pain", "flank_or_groin_pain", "painful_bulge"],
+      "ask": "Where is the pain mainly located: upper abdomen/back, flank/groin, right lower abdomen, or is there a painful bulge?",
+      "why": "Pain location separates several urgent causes of abdominal pain with vomiting."
+    },
+    {
+      "when_features_present": ["diarrhea"],
+      "when_features_missing_any": ["fever", "blood_in_stool", "no_blood_in_stool", "hydration_preserved", "dehydration"],
+      "ask": "Do you have fever or blood in the stool, and are you able to keep fluids down?",
+      "why": "Fever, bleeding, and hydration help separate likely self-care from symptoms needing assessment."
+    },
+    {
+      "when_features_present": ["generic_abdominal_pain"],
+      "when_features_missing_any": ["rlq_pain", "llq_pain", "upper_abdominal_pain", "diarrhea", "vomiting_or_nausea", "fever", "blood_in_stool"],
+      "ask": "Can you describe where the pain is, how long it has been going on, and whether you have symptoms like vomiting, diarrhea, fever, urinary symptoms, or bleeding?",
+      "why": "Location, timing, and associated symptoms are the broadest high-yield discriminators when only abdominal pain is known."
+    }
+  ]
+}

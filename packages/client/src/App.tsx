@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BodyPanel } from "./components/BodyPanel";
 import { ConclusionPanel } from "./components/ConclusionPanel";
 import { LeftPanel } from "./components/LeftPanel";
+import { PostTurnRatingPanel } from "./components/PostTurnRatingPanel";
 import { TopBar } from "./components/TopBar";
 import {
   CASES,
@@ -11,7 +12,9 @@ import {
 } from "./data/cases";
 import {
   fetchCases,
+  savePostTurnRatings,
   type TriageCaseApiItem,
+  type PostTurnRatingRequest,
   sendChatMessage,
 } from "./services/api";
 import type {
@@ -24,12 +27,22 @@ import { getConditionFromUrl } from "./utils/condition";
 import "./styles/app.css";
 
 let idCounter = 0;
+const PARTICIPANT_ID = "test_web_001";
+
+type PendingRatingContext = {
+  turnIndex: number;
+  doctorMessageId: string;
+};
 
 function createId(prefix: string) {
   idCounter += 1;
   const uniqueId =
     globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${idCounter}`;
   return `${prefix}-${uniqueId}`;
+}
+
+function createSessionId() {
+  return createId("session");
 }
 
 function normalizeCase(
@@ -86,6 +99,7 @@ function App() {
   const condition = useMemo(() => getConditionFromUrl(), []);
 
   const [selectedCase, setSelectedCase] = useState<TriageCase | null>(null);
+  const [sessionId, setSessionId] = useState(createSessionId);
   const [isLoadingCases, setIsLoadingCases] = useState(true);
   const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>(
     [],
@@ -96,11 +110,17 @@ function App() {
   const [sessionConcluded, setSessionConcluded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [caseError, setCaseError] = useState<string | null>(null);
+  const [pendingRating, setPendingRating] = useState(false);
+  const [pendingRatingContext, setPendingRatingContext] =
+    useState<PendingRatingContext | null>(null);
+  const [isSavingRating, setIsSavingRating] = useState(false);
+  const [, setPostTurnRatings] = useState<PostTurnRatingRequest[]>([]);
 
   const controlsLocked =
     isLoadingCases ||
     !selectedCase ||
     isThinking ||
+    pendingRating ||
     sessionConcluded ||
     doctorTurns >= MAX_TURNS;
 
@@ -154,12 +174,17 @@ function App() {
 
   function resetTrial(nextCase = selectedCase) {
     setSelectedCase(nextCase);
+    setSessionId(createSessionId());
     setConversationHistory([]);
     setRevealedClues([]);
     setIsThinking(false);
     setDoctorTurns(0);
     setSessionConcluded(false);
     setError(null);
+    setPendingRating(false);
+    setPendingRatingContext(null);
+    setIsSavingRating(false);
+    setPostTurnRatings([]);
   }
 
   async function sendPatientMessage(content: string) {
@@ -182,9 +207,10 @@ function App() {
       console.log("caseId sent to backend:", selectedCase.caseId);
 
       const chatResponse = await sendChatMessage({
-        participantId: "test_web_001",
+        participantId: PARTICIPANT_ID,
         caseId: selectedCase.caseId,
         condition,
+        sessionId,
         message: content,
       });
 
@@ -195,6 +221,11 @@ function App() {
       };
 
       setConversationHistory([...nextHistory, doctorMessage]);
+      setPendingRating(true);
+      setPendingRatingContext({
+        turnIndex: doctorTurns + 1,
+        doctorMessageId: doctorMessage.id,
+      });
 
       setDoctorTurns((turns) => {
         const nextTurns = turns + 1;
@@ -216,6 +247,43 @@ function App() {
       setError(message);
     } finally {
       setIsThinking(false);
+    }
+  }
+
+  async function handlePostTurnRatingSubmit(ratings: {
+    perceivedUrgency: number;
+    perceivedRisk: number;
+    confidence: number;
+  }) {
+    if (!selectedCase || !pendingRatingContext || isSavingRating) return;
+
+    const timestamp = new Date().toISOString();
+    const payload: PostTurnRatingRequest = {
+      participantId: PARTICIPANT_ID,
+      caseId: selectedCase.caseId,
+      condition,
+      sessionId,
+      turnIndex: pendingRatingContext.turnIndex,
+      messageId: pendingRatingContext.doctorMessageId,
+      doctorMessageId: pendingRatingContext.doctorMessageId,
+      perceivedUrgency: ratings.perceivedUrgency,
+      perceivedRisk: ratings.perceivedRisk,
+      confidence: ratings.confidence,
+      timestamp,
+    };
+
+    setIsSavingRating(true);
+    setError(null);
+
+    try {
+      await savePostTurnRatings(payload);
+    } catch (requestError) {
+      console.warn("Post-turn rating could not be saved to backend:", requestError);
+    } finally {
+      setPostTurnRatings((items) => [...items, payload]);
+      setPendingRating(false);
+      setPendingRatingContext(null);
+      setIsSavingRating(false);
     }
   }
 
@@ -270,11 +338,21 @@ function App() {
             onReset={() => resetTrial()}
             onConclude={handleConclude}
             onSend={sendPatientMessage}
+            ratingPanel={
+              pendingRating ? (
+                <PostTurnRatingPanel
+                  disabled={isSavingRating}
+                  onSubmit={handlePostTurnRatingSubmit}
+                />
+              ) : null
+            }
           />
 
           <BodyPanel
             currentCase={selectedCase}
             condition={condition}
+            participantId={PARTICIPANT_ID}
+            sessionId={sessionId}
             revealedClues={revealedClues}
             onReveal={(clue) => setRevealedClues((items) => [...items, clue])}
           />
