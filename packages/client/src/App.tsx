@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BodyPanel } from "./components/BodyPanel";
 import { ConclusionPanel } from "./components/ConclusionPanel";
 import { LeftPanel } from "./components/LeftPanel";
@@ -15,7 +15,7 @@ import {
   savePostTurnRatings,
   type TriageCaseApiItem,
   type PostTurnRatingRequest,
-  sendChatMessage,
+  sendChatMessageStream,
 } from "./services/api";
 import type {
   CareLabel,
@@ -97,6 +97,7 @@ function normalizeCase(
 
 function App() {
   const condition = useMemo(() => getConditionFromUrl(), []);
+  const streamTokenRef = useRef(0);
 
   const [selectedCase, setSelectedCase] = useState<TriageCase | null>(null);
   const [sessionId, setSessionId] = useState(createSessionId);
@@ -105,7 +106,11 @@ function App() {
     [],
   );
   const [revealedClues, setRevealedClues] = useState<RevealedClue[]>([]);
+  const [bodyMapLockedAfterTurn, setBodyMapLockedAfterTurn] = useState<
+    number | null
+  >(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [isStreamingDoctorMessage, setIsStreamingDoctorMessage] = useState(false);
   const [doctorTurns, setDoctorTurns] = useState(0);
   const [sessionConcluded, setSessionConcluded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,13 +121,35 @@ function App() {
   const [isSavingRating, setIsSavingRating] = useState(false);
   const [, setPostTurnRatings] = useState<PostTurnRatingRequest[]>([]);
 
+  useEffect(() => {
+    return () => {
+      streamTokenRef.current += 1;
+    };
+  }, []);
+
   const controlsLocked =
     isLoadingCases ||
     !selectedCase ||
     isThinking ||
+    isStreamingDoctorMessage ||
     pendingRating ||
     sessionConcluded ||
     doctorTurns >= MAX_TURNS;
+  const bodyMapAwaitingDialogue =
+    bodyMapLockedAfterTurn !== null && doctorTurns <= bodyMapLockedAfterTurn;
+  const bodyMapLocked =
+    bodyMapAwaitingDialogue ||
+    isThinking ||
+    isStreamingDoctorMessage ||
+    pendingRating ||
+    sessionConcluded ||
+    doctorTurns >= MAX_TURNS;
+
+  useEffect(() => {
+    if (bodyMapLockedAfterTurn !== null && doctorTurns > bodyMapLockedAfterTurn) {
+      setBodyMapLockedAfterTurn(null);
+    }
+  }, [bodyMapLockedAfterTurn, doctorTurns]);
 
   useEffect(() => {
     let isMounted = true;
@@ -150,12 +177,17 @@ function App() {
 
         const fallbackCase = CASES[0];
 
+        if (!fallbackCase) {
+          setCaseError(
+            requestError instanceof Error
+              ? `Cases could not be loaded. ${requestError.message}`
+              : "Cases could not be loaded.",
+          );
+          return;
+        }
+
         setSelectedCase(fallbackCase);
-        setCaseError(
-          requestError instanceof Error
-            ? `Cases could not be loaded from the backend. Showing the first available case. ${requestError.message}`
-            : "Cases could not be loaded from the backend. Showing the first available case.",
-        );
+        setCaseError(null);
 
         console.warn("Falling back to local cases:", requestError);
       } finally {
@@ -173,11 +205,14 @@ function App() {
   }, []);
 
   function resetTrial(nextCase = selectedCase) {
+    streamTokenRef.current += 1;
     setSelectedCase(nextCase);
     setSessionId(createSessionId());
     setConversationHistory([]);
     setRevealedClues([]);
+    setBodyMapLockedAfterTurn(null);
     setIsThinking(false);
+    setIsStreamingDoctorMessage(false);
     setDoctorTurns(0);
     setSessionConcluded(false);
     setError(null);
@@ -187,8 +222,20 @@ function App() {
     setPostTurnRatings([]);
   }
 
+  function appendDoctorMessageDelta(messageId: string, delta: string, streamToken: number) {
+    if (streamTokenRef.current !== streamToken) return;
+
+    setConversationHistory((items) =>
+      items.map((item) =>
+        item.id === messageId
+          ? { ...item, content: `${item.content}${delta}` }
+          : item,
+      ),
+    );
+  }
+
   async function sendPatientMessage(content: string) {
-    if (controlsLocked || !selectedCase || !content.trim()) return;
+    if (condition === "reasoning" || controlsLocked || !selectedCase || !content.trim()) return;
 
     const patientMessage: ChatMessage = {
       id: createId("patient"),
@@ -206,21 +253,46 @@ function App() {
       console.log("selectedCase before chat:", selectedCase);
       console.log("caseId sent to backend:", selectedCase.caseId);
 
-      const chatResponse = await sendChatMessage({
-        participantId: PARTICIPANT_ID,
-        caseId: selectedCase.caseId,
-        condition,
-        sessionId,
-        message: content,
-      });
-
       const doctorMessage: ChatMessage = {
         id: createId("doctor"),
         role: "doctor",
-        content: chatResponse.response,
+        content: "",
       };
+      const streamToken = streamTokenRef.current + 1;
+      streamTokenRef.current = streamToken;
 
       setConversationHistory([...nextHistory, doctorMessage]);
+      setIsStreamingDoctorMessage(true);
+
+      const chatResponse = await sendChatMessageStream(
+        {
+          participantId: PARTICIPANT_ID,
+          caseId: selectedCase.caseId,
+          condition,
+          sessionId,
+          message: content,
+        },
+        (delta) => {
+          if (streamTokenRef.current !== streamToken) return;
+          setIsThinking(false);
+          appendDoctorMessageDelta(doctorMessage.id, delta, streamToken);
+        },
+      );
+
+      const streamCompleted = streamTokenRef.current === streamToken;
+
+      if (!streamCompleted) return;
+
+      setConversationHistory((items) =>
+        items.map((item) =>
+          item.id === doctorMessage.id
+            ? { ...item, content: chatResponse.response }
+            : item,
+        ),
+      );
+
+      setIsStreamingDoctorMessage(false);
+
       setPendingRating(true);
       setPendingRatingContext({
         turnIndex: doctorTurns + 1,
@@ -247,6 +319,7 @@ function App() {
       setError(message);
     } finally {
       setIsThinking(false);
+      setIsStreamingDoctorMessage(false);
     }
   }
 
@@ -315,6 +388,50 @@ function App() {
     }
   }
 
+  function handleReasoningSubmit(reasoning: string) {
+    if (
+      condition !== "reasoning" ||
+      controlsLocked ||
+      !selectedCase ||
+      !reasoning.trim()
+    ) {
+      return;
+    }
+
+    const reasoningMessage: ChatMessage = {
+      id: createId("reasoning"),
+      role: "patient",
+      content: reasoning.trim(),
+    };
+
+    setConversationHistory((items) => [...items, reasoningMessage]);
+    setPendingRating(true);
+    setPendingRatingContext({
+      turnIndex: doctorTurns + 1,
+      doctorMessageId: reasoningMessage.id,
+    });
+
+    setDoctorTurns((turns) => {
+      const nextTurns = turns + 1;
+
+      if (nextTurns >= MAX_TURNS) {
+        setSessionConcluded(true);
+      }
+
+      return nextTurns;
+    });
+  }
+
+  function handleRevealClue(clue: RevealedClue) {
+    setRevealedClues((items) =>
+      items.some((item) => item.id === clue.id) ? items : [...items, clue],
+    );
+
+    if (clue.source === "region") {
+      setBodyMapLockedAfterTurn(doctorTurns);
+    }
+  }
+
   return (
     <div className="app-shell">
       <TopBar isThinking={isThinking} condition={condition} />
@@ -338,6 +455,7 @@ function App() {
             onReset={() => resetTrial()}
             onConclude={handleConclude}
             onSend={sendPatientMessage}
+            onReasoningSubmit={handleReasoningSubmit}
             ratingPanel={
               pendingRating ? (
                 <PostTurnRatingPanel
@@ -354,7 +472,8 @@ function App() {
             participantId={PARTICIPANT_ID}
             sessionId={sessionId}
             revealedClues={revealedClues}
-            onReveal={(clue) => setRevealedClues((items) => [...items, clue])}
+            bodyMapLocked={bodyMapLocked}
+            onReveal={handleRevealClue}
           />
         </main>
       )}

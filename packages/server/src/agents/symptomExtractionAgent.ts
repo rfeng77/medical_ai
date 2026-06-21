@@ -126,6 +126,13 @@ const symptomTemplates: SymptomTemplate[] = [
     label: "vomiting",
     aliases: ["vomiting", "throwing up", "vomit"],
     presentPatterns: [/\bvomiting\b/i, /\bvomit(ed|ing)?\b/i, /\bthrowing up\b/i],
+    absentPatterns: [
+      /\bno\b[^.?!]*\bvomiting\b/i,
+      /\bnot vomiting\b/i,
+      /\bdo not have\b[^.?!]*\bvomiting\b/i,
+      /\bdon't have\b[^.?!]*\bvomiting\b/i,
+      /\bwithout vomiting\b/i
+    ],
     uncertainPatterns: [/\bfeel like (I might )?(vomit|throw up)\b/i]
   },
   {
@@ -133,6 +140,13 @@ const symptomTemplates: SymptomTemplate[] = [
     label: "nausea",
     aliases: ["nausea", "nauseous", "feel like throwing up"],
     presentPatterns: [/\bnausea\b/i, /\bnauseous\b/i, /\bfeel like throwing up\b/i],
+    absentPatterns: [
+      /\bno\b[^.?!]*\bnausea\b/i,
+      /\bnot nauseous\b/i,
+      /\bdo not have\b[^.?!]*\bnausea\b/i,
+      /\bdon't have\b[^.?!]*\bnausea\b/i,
+      /\bwithout nausea\b/i
+    ],
     uncertainPatterns: [/\bmaybe nauseous\b/i, /\bnot sure (if|whether).*nauseous/i]
   },
   {
@@ -230,6 +244,92 @@ const symptomTemplates: SymptomTemplate[] = [
     presentPatterns: [/\bsevere\b/i, /\bworst\b/i, /\bworsening\b/i, /\bunbearable\b/i, /\bracing heart\b/i, /\bclammy\b/i]
   },
   {
+    symptomId: "right_upper_quadrant_pain",
+    label: "right upper abdominal pain",
+    aliases: ["right upper quadrant pain", "right upper abdomen", "upper right abdomen", "RUQ pain"],
+    presentPatterns: [/\bright upper\b/i, /\bupper right\b/i, /\bruq\b/i],
+    bodyLocation: "right upper abdomen"
+  },
+  {
+    symptomId: "diffuse_abdominal_pain",
+    label: "diffuse abdominal pain",
+    aliases: ["diffuse abdominal pain", "pain all over", "generalized abdominal pain"],
+    presentPatterns: [/\bdiffuse abdominal pain\b/i, /\bpain all over\b/i, /\bgeneralized abdominal pain\b/i],
+    bodyLocation: "diffuse abdomen"
+  },
+  {
+    symptomId: "radiation_to_back",
+    label: "pain radiating to the back",
+    aliases: ["radiates to back", "goes to the back", "back radiation"],
+    presentPatterns: [/\bradiat(es|ing)? to (the )?back\b/i, /\bgo(es|ing)? to (the )?back\b/i, /\bback radiation\b/i]
+  },
+  {
+    symptomId: "shoulder_or_back_radiation",
+    label: "pain radiating to shoulder or back",
+    aliases: ["radiates to shoulder", "radiates to back", "goes to shoulder", "goes to back"],
+    presentPatterns: [/\bradiat(es|ing)? to (the )?(right )?shoulder\b/i, /\bgo(es|ing)? to (the )?(right )?shoulder\b/i, /\bshoulder\b/i]
+  },
+  {
+    symptomId: "postprandial_pain",
+    label: "pain after eating",
+    aliases: ["after eating", "after meals", "fatty meals", "postprandial"],
+    presentPatterns: [/\bafter eating\b/i, /\bafter meals?\b/i, /\bfatty meals?\b/i, /\bpostprandial\b/i]
+  },
+  {
+    symptomId: "prolonged_episode",
+    label: "prolonged episode",
+    aliases: ["lasted several hours", "lasting hours", "prolonged episode"],
+    presentPatterns: [/\blast(ed|ing)? several hours\b/i, /\bfor several hours\b/i, /\bprolonged episode\b/i]
+  },
+  {
+    symptomId: "pain_out_of_proportion",
+    label: "pain out of proportion",
+    aliases: ["pain out of proportion", "pain seems worse than exam"],
+    presentPatterns: [/\bpain out of proportion\b/i, /\bworse than (the )?(exam|tenderness)\b/i]
+  },
+  {
+    symptomId: "sudden_severe_pain",
+    label: "sudden severe pain",
+    aliases: ["sudden severe pain", "abrupt severe pain"],
+    presentPatterns: [/\bsudden severe pain\b/i, /\babrupt severe pain\b/i, /\bsuddenly.*severe\b/i]
+  },
+  {
+    symptomId: "vascular_risk_factors",
+    label: "vascular risk factors",
+    aliases: ["atrial fibrillation", "blood clot risk", "vascular disease"],
+    presentPatterns: [/\batrial fibrillation\b/i, /\bafib\b/i, /\bblood clot\b/i, /\bvascular disease\b/i]
+  },
+  {
+    symptomId: "ill_appearance",
+    label: "ill appearance",
+    aliases: ["looks very ill", "appears ill", "clammy"],
+    presentPatterns: [/\blooks? very ill\b/i, /\bappears? ill\b/i, /\bclammy\b/i]
+  },
+  {
+    symptomId: "altered_bowel_habits",
+    label: "altered bowel habits",
+    aliases: ["bowel habit change", "constipation", "diarrhea"],
+    presentPatterns: [/\bbowel habit/i, /\bconstipat/i, /\bdiarrhea\b/i]
+  },
+  {
+    symptomId: "worsening_tenderness",
+    label: "worsening tenderness",
+    aliases: ["worsening tenderness", "more tender"],
+    presentPatterns: [/\bworsening tenderness\b/i, /\bmore tender\b/i, /\bincreasing tenderness\b/i]
+  },
+  {
+    symptomId: "older_age_or_prior_history",
+    label: "older age or prior history",
+    aliases: ["prior diverticulitis", "previous similar episode", "older"],
+    presentPatterns: [/\bprior diverticulitis\b/i, /\bprevious similar episode\b/i, /\bolder\b/i]
+  },
+  {
+    symptomId: "alcohol_or_gallstone_risk_factors",
+    label: "alcohol or gallstone risk factors",
+    aliases: ["alcohol", "gallstones", "gallstone"],
+    presentPatterns: [/\balcohol\b/i, /\bgallstones?\b/i]
+  },
+  {
     symptomId: "medication_risk",
     label: "medication bleeding risk",
     aliases: ["ibuprofen", "NSAID", "blood thinner", "warfarin", "aspirin"],
@@ -264,8 +364,12 @@ const llmSymptomIdAliases: Record<string, string> = {
   left_lower_quadrant_pain: "left_lower_abdominal_pain",
   llq_pain: "left_lower_abdominal_pain",
   lower_left_pain: "left_lower_abdominal_pain",
+  right_upper_quadrant_pain: "right_upper_quadrant_pain",
+  ruq_pain: "right_upper_quadrant_pain",
+  upper_right_pain: "right_upper_quadrant_pain",
   upper_abdomen_pain: "upper_abdominal_pain",
   epigastric_abdominal_pain: "epigastric_pain",
+  diffuse_abdominal_pain: "diffuse_abdominal_pain",
   indigestion: "burning_or_indigestion",
   heartburn: "burning_or_indigestion",
   flank_pain: "flank_or_groin_pain",
@@ -274,6 +378,20 @@ const llmSymptomIdAliases: Record<string, string> = {
   migration: "pain_migration",
   movement_or_rebound: "movement_worsens_pain",
   movement_pain: "movement_worsens_pain",
+  movement_pain_or_rebound_tenderness: "movement_worsens_pain",
+  radiation_to_back: "radiation_to_back",
+  radiates_back: "radiation_to_back",
+  shoulder_or_back_radiation: "shoulder_or_back_radiation",
+  postprandial_pain: "postprandial_pain",
+  prolonged_episode: "prolonged_episode",
+  pain_out_of_proportion: "pain_out_of_proportion",
+  sudden_severe_pain: "sudden_severe_pain",
+  vascular_risk_factors: "vascular_risk_factors",
+  ill_appearance: "ill_appearance",
+  altered_bowel_habits: "altered_bowel_habits",
+  worsening_tenderness: "worsening_tenderness",
+  older_age_or_prior_history: "older_age_or_prior_history",
+  alcohol_or_gallstone_risk_factors: "alcohol_or_gallstone_risk_factors",
   hydration: "hydration_preserved",
   can_drink: "hydration_preserved",
   able_to_drink: "hydration_preserved",
@@ -319,9 +437,27 @@ function messageContainsEvidence(message: string, evidenceText: string): boolean
   return message.toLowerCase().includes(evidenceText.toLowerCase());
 }
 
+function mergePatternDetectedSymptoms(
+  symptoms: ExtractedSymptom[],
+  latestMessage: string
+): ExtractedSymptom[] {
+  const byId = new Map(symptoms.map((symptom) => [symptom.symptomId, symptom]));
+  const patternDetectedSymptoms = fallbackExtractSymptoms(latestMessage).extractedSymptoms;
+
+  for (const symptom of patternDetectedSymptoms) {
+    const existing = byId.get(symptom.symptomId);
+
+    if (!existing || (symptom.status === "absent" && existing.status !== "absent")) {
+      byId.set(symptom.symptomId, symptom);
+    }
+  }
+
+  return [...byId.values()];
+}
+
 function sanitizeExtractionResult(value: unknown, latestMessage: string): SymptomExtractionAgentResult {
   const parsed = value as Partial<SymptomExtractionAgentResult>;
-  const symptoms = Array.isArray(parsed.extractedSymptoms)
+  const llmSymptoms = Array.isArray(parsed.extractedSymptoms)
     ? parsed.extractedSymptoms
         .map((item): ExtractedSymptom | null => {
           const symptom = item as Partial<ExtractedSymptom>;
@@ -363,6 +499,7 @@ function sanitizeExtractionResult(value: unknown, latestMessage: string): Sympto
         })
         .filter((item): item is ExtractedSymptom => item !== null)
     : [];
+  const symptoms = mergePatternDetectedSymptoms(llmSymptoms, latestMessage);
 
   return {
     isSymptomDisclosure: symptoms.length > 0,
@@ -542,13 +679,22 @@ flank_or_groin_pain, painful_bulge, watery_diarrhea, diarrhea, blood_in_stool, h
 fever, stomach_cramps, vomiting, nausea, hydration_preserved, dehydration,
 right_lower_abdominal_pain, pain_migration, movement_worsens_pain, generic_abdominal_pain,
 abdominal_swelling_or_no_stool, urinary_symptoms, pregnancy_possible, dizziness_syncope,
-severe_or_worsening, medication_risk.
+severe_or_worsening, right_upper_quadrant_pain, diffuse_abdominal_pain, radiation_to_back,
+shoulder_or_back_radiation, postprandial_pain, prolonged_episode, pain_out_of_proportion,
+sudden_severe_pain, vascular_risk_factors, ill_appearance, altered_bowel_habits,
+worsening_tenderness, older_age_or_prior_history, alcohol_or_gallstone_risk_factors,
+medication_risk.
 Map "diffuse crampy abdominal discomfort", "crampy abdominal discomfort", or "cramps" to stomach_cramps.
 Map "can keep small sips of water down", "keeping fluids down", "can still drink", "urination normal", or "urinating normally" to hydration_preserved.
 Map "no blood", "no blood in stool", "no black stool", or "not bloody" to blood_in_stool with status "absent".
 Map "black sticky stool", "coffee grounds", or "blood in stool" to blood_in_stool with status "present".
 Map "left lower abdominal pain" or "lower left pain" to left_lower_abdominal_pain.
+Map "right upper abdominal pain", "upper right pain", or "RUQ pain" to right_upper_quadrant_pain.
+Map pain spreading to the back to radiation_to_back; map pain spreading to the right shoulder to shoulder_or_back_radiation.
 Map "upper abdominal pain", "upper stomach pain", or "burning upper abdominal pain" to upper_abdominal_pain; also extract burning_or_indigestion when burning/indigestion is stated.
+Map pain after eating or fatty meals to postprandial_pain.
+Map "pain out of proportion" to pain_out_of_proportion.
+Map atrial fibrillation, vascular disease, or blood clot risk to vascular_risk_factors.
 Map "ibuprofen", "NSAID", "blood thinner", "warfarin", or "aspirin" to medication_risk.
 Preserve exact evidence text from the latest message; evidenceText must be a substring of the latest participant message.
 Return strict JSON only. Do not include markdown.

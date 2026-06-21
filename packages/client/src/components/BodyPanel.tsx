@@ -9,6 +9,7 @@ type BodyPanelProps = {
   participantId: string;
   sessionId: string;
   revealedClues: RevealedClue[];
+  bodyMapLocked: boolean;
   onReveal: (clue: RevealedClue) => void;
 };
 
@@ -18,6 +19,7 @@ export function BodyPanel({
   participantId,
   sessionId,
   revealedClues,
+  bodyMapLocked,
   onReveal,
 }: BodyPanelProps) {
   return (
@@ -32,6 +34,7 @@ export function BodyPanel({
           participantId={participantId}
           sessionId={sessionId}
           revealedClues={revealedClues}
+          disabled={bodyMapLocked}
           onReveal={onReveal}
         />
       </section>

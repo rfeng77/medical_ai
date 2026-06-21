@@ -1,4 +1,4 @@
-import { generateGeminiResponse } from "../services/geminiService";
+import { generateGeminiResponse, generateGeminiResponseStream } from "../services/geminiService";
 import type {
   DecisionControllerResult,
   LeafMatchingAgentResult,
@@ -85,7 +85,29 @@ function humanizeFeatureKey(featureKey: string): string {
     constipation_or_no_stool: "abdominal swelling or ability to pass stool or gas",
     painful_bulge: "a painful abdominal or groin bulge",
     severe_or_worsening: "whether symptoms are severe or worsening",
-    medication_risk: "relevant medication use"
+    medication_risk: "relevant medication use",
+    right_lower_quadrant_pain: "whether pain is strongest in the lower right abdomen",
+    pain_migration: "whether the pain moved or radiates",
+    movement_pain_or_rebound_tenderness: "whether movement, walking, coughing, or bumps worsen the pain",
+    worsening_course: "whether symptoms are worsening",
+    right_upper_quadrant_pain: "whether pain is strongest in the upper right abdomen",
+    postprandial_pain: "whether pain happens after eating",
+    shoulder_or_back_radiation: "whether pain spreads to the shoulder or back",
+    prolonged_episode: "how long the episode has lasted",
+    pain_out_of_proportion: "whether the pain feels unusually severe",
+    sudden_severe_pain: "whether the pain started suddenly and severely",
+    vascular_risk_factors: "blood clot or vascular risk factors",
+    diffuse_abdominal_pain: "whether pain is diffuse across the abdomen",
+    ill_appearance: "whether they feel or look very unwell",
+    vomiting_or_diarrhea: "vomiting or diarrhea",
+    left_lower_quadrant_pain: "whether pain is strongest in the lower left abdomen",
+    altered_bowel_habits: "bowel habit changes",
+    worsening_tenderness: "whether tenderness is worsening",
+    older_age_or_prior_history: "prior similar episodes or relevant history",
+    radiation_to_back: "whether pain spreads to the back",
+    severe_persistent_pain: "whether pain is severe and persistent",
+    very_unwell_appearance: "whether they feel very unwell",
+    alcohol_or_gallstone_risk_factors: "alcohol or gallstone risk factors"
   };
 
   return labels[featureKey] ?? featureKey.replaceAll("_", " ");
@@ -110,7 +132,17 @@ function featureGroup(featureKey: string): string {
     rlq_pain: "pain_location",
     llq_pain: "pain_location",
     upper_abdominal_pain: "pain_location",
-    epigastric_pain: "pain_location"
+    epigastric_pain: "pain_location",
+    right_lower_quadrant_pain: "pain_location",
+    right_upper_quadrant_pain: "pain_location",
+    left_lower_quadrant_pain: "pain_location",
+    diffuse_abdominal_pain: "pain_location",
+    pain_migration: "pain_migration",
+    radiation_to_back: "pain_migration",
+    shoulder_or_back_radiation: "pain_migration",
+    movement_pain_or_rebound_tenderness: "movement_pain",
+    worsening_course: "duration",
+    prolonged_episode: "duration"
   };
 
   return groups[featureKey] ?? featureKey;
@@ -142,15 +174,12 @@ function candidateSuggestionCuesFromTopLeaves(
 
 function followUpCues({
   decisionResult,
-  matchingResult
+  matchingResult: _matchingResult
 }: {
   decisionResult: DecisionControllerResult;
   matchingResult: LeafMatchingAgentResult;
 }): string[] {
-  return uniqueStrings([
-    ...decisionResult.suggestedQuestionFocus,
-    ...candidateSuggestionCuesFromTopLeaves(matchingResult)
-  ]).slice(0, 3);
+  return uniqueStrings(decisionResult.suggestedQuestionFocus).slice(0, 2);
 }
 
 function fallbackResponse({
@@ -198,16 +227,17 @@ export async function generatePatientFacingResponse({
   memory,
   extractionResult,
   matchingResult,
-  decisionResult
+  decisionResult,
+  onToken
 }: {
   message: string;
   memory: ParticipantMemory;
   extractionResult: SymptomExtractionAgentResult;
   matchingResult: LeafMatchingAgentResult;
   decisionResult: DecisionControllerResult;
+  onToken?: (chunk: string) => void;
 }): Promise<string> {
   const fallback = (): string => fallbackResponse({ memory, decisionResult, matchingResult });
-  const candidateSuggestionCues = candidateSuggestionCuesFromTopLeaves(matchingResult);
   const selectedFollowUpCues = followUpCues({ decisionResult, matchingResult });
 
   const systemInstruction = `
@@ -216,12 +246,22 @@ Use only the participant-disclosed symptoms provided in the prompt.
 Do not claim diagnostic certainty.
 You may say "this could be consistent with" or "one possibility is".
 
-If the decision result says to continue information seeking, explain that more information is needed.
-You may choose a few useful follow-up cues based on the suggested question focus and the missing higher-value symptom features from the top possible conditions.
-Do not list too many questions or symptom areas. Pick only the most helpful 1 to 3 things to ask about.
-The follow-up does not have to be limited to body areas; it can ask about symptom qualities, timing, fever, vomiting, bowel changes, bleeding, hydration, urinary symptoms, pregnancy possibility, worsening, or other clinically useful missing details.
+If the decision result says to continue information seeking, make it clear that more information is still needed.
+Ask follow-up questions only from the suggested question focus provided by the decision controller.
+Do not add extra symptom areas unless they appear in the suggested question focus.
+Pick only the most helpful 1 to 2 things to ask about.
+If the decision result says to continue information seeking but includes a selectedTriageLevel, treat it only as a safety concern signal. You may briefly say the pattern could be concerning, but do not give a final triage recommendation or final disease conclusion.
+Use the conversation to help the participant reduce uncertainty, not just to collect fields. Decide case-by-case which of these moves would actually help; do not use all of them every turn and do not sound formulaic:
+- If the participant seems confused, anxious, or asks why you need more information, briefly explain what is still uncertain in plain language.
+- If a follow-up question may feel random, briefly explain why that question helps narrow the possibilities.
+- If the participant gives vague wording such as "I feel bad", "it hurts", "I feel weird", or "I am not sure", prioritize a clarifying question that helps them describe timing, location, severity, quality, or associated symptoms.
+- If the current evidence clearly points toward a broad category, you may name that broad working hypothesis, such as "an airway-related problem" or "a blood/lymph-node related pattern", but only as a possibility and only when it helps the participant answer the next question.
+- If the participant has already provided clear information and the next question is straightforward, keep the response simple and just ask the next high-yield question.
+- Never change the strategy, scoring, candidate set, or stopping decision. The decision controller decides what information is needed; your role is to make that process understandable and easy to answer.
+If the participant says something off-topic, playful, administrative, or otherwise unrelated to symptoms, respond kindly and briefly. Gently redirect them to share information that helps judge the medical situation, for example symptoms, timing, location, severity, fever, vomiting, bowel changes, bleeding, urinary symptoms, pregnancy possibility, or worsening. Do not scold them.
 
 If the decision result gives a triage recommendation, explain it clearly and kindly.
+If decisionResult.shouldStop is true, do not ask follow-up questions even if suggestedQuestionFocus is present. Give the conclusion/recommendation and uncertainty statement only.
 If multiple conditions remain possible, say that more than one explanation is possible and ask for information that would help distinguish them.
 Do not mention raw scores, thresholds, leaf nodes, backend logic, or internal matching.
 Do not reveal hidden case truth.
@@ -251,8 +291,7 @@ Keep the response concise and natural, 2 to 5 sentences.
         triageLevel: leaf.triageLevel,
         reasoningSummary: leaf.reasoningSummary,
         missingKeyFeatures: leaf.missingKeyFeatures
-      })),
-      candidateSuggestionCues
+      }))
     },
     decisionResult: {
       shouldStop: decisionResult.shouldStop,
@@ -267,19 +306,26 @@ Keep the response concise and natural, 2 to 5 sentences.
     },
     responseGuidance: {
       followUpQuestionInstruction:
-        "When asking for more information, choose only 1 to 3 useful cues. Prefer cues that help distinguish the top possible conditions. Do not mechanically list every missing item.",
-      candidateSuggestionCues,
+        "When asking for more information, ask only about selectedFollowUpCues. Do not add extra symptom areas. Explain uncertainty, hypothesis, or why the question helps only when it would make the answer easier or the interaction clearer.",
       selectedFollowUpCues
     }
   };
 
   try {
-    const response = await generateGeminiResponse({
-      systemInstruction,
-      userPrompt: JSON.stringify(patientSafePrompt, null, 2),
-      temperature: 0.4,
-      maxOutputTokens: 500
-    });
+    const response = onToken
+      ? await generateGeminiResponseStream({
+          systemInstruction,
+          userPrompt: JSON.stringify(patientSafePrompt, null, 2),
+          temperature: 0.4,
+          maxOutputTokens: 500,
+          onChunk: onToken
+        })
+      : await generateGeminiResponse({
+          systemInstruction,
+          userPrompt: JSON.stringify(patientSafePrompt, null, 2),
+          temperature: 0.4,
+          maxOutputTokens: 500
+        });
 
     return stripPlainText(response);
   } catch (error) {

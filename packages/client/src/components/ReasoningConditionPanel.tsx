@@ -1,35 +1,44 @@
-import { useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
+import type { ChatMessage as ChatMessageType } from '../types/triage'
+import { ChatInput } from './ChatInput'
+import { MessageList } from './MessageList'
 
-export function ReasoningConditionPanel() {
-  const [notes, setNotes] = useState('')
+type ReasoningConditionPanelProps = {
+  messages: ChatMessageType[]
+  disabled: boolean
+  error: string | null
+  ratingPanel?: ReactNode
+  onSubmit: (reasoning: string) => void
+}
 
-  const wordCount = useMemo(() => {
-    const trimmed = notes.trim()
-    return trimmed ? trimmed.split(/\s+/).length : 0
-  }, [notes])
-
+export function ReasoningConditionPanel({
+  messages,
+  disabled,
+  error,
+  ratingPanel,
+  onSubmit,
+}: ReasoningConditionPanelProps) {
   return (
     <section className="chat-panel reasoning-panel">
+      {error ? <div className="error-banner">{error}</div> : null}
       <div className="reasoning-header">
         <h2>Clinical Reasoning Notes</h2>
         <p>
-          Please review the available patient information and write your reasoning about the
-          likely triage decision.
+          Write your reasoning at any time. If you open a new body-map point, submit a
+          reasoning note before opening another new point.
         </p>
       </div>
-      <textarea
-        className="reasoning-textarea"
-        aria-label="Clinical reasoning notes"
-        placeholder="Write your clinical reasoning notes here..."
-        value={notes}
-        onChange={(event) => setNotes(event.target.value)}
+      <MessageList
+        messages={messages}
+        isThinking={false}
+        emptyMessage="Submit your reasoning notes here. You can start before or after opening a body-map point."
       />
-      <div className="reasoning-footer">
-        <span>
-          {wordCount} words / {notes.length} characters
-        </span>
-        <button type="button">Save reasoning</button>
-      </div>
+      {ratingPanel}
+      <ChatInput
+        disabled={disabled}
+        placeholder="Type your reasoning note..."
+        onSend={onSubmit}
+      />
     </section>
   )
 }

@@ -539,12 +539,25 @@ button:disabled {
   outline: none;
 }
 
+.body-region-marker:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.body-region-marker.revealed {
+  opacity: 0.72;
+}
+
+.body-region-marker:disabled .body-region-marker-dot {
+  background: #64748b;
+}
+
 .body-hotspot-tooltip {
   position: absolute;
   transform: translate(-50%, calc(-100% - 14px));
   min-width: 170px;
   max-width: 220px;
-  padding: 8px 10px;
+  padding: 10px 30px 10px 10px;
   border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.96);
@@ -553,7 +566,34 @@ button:disabled {
   font-size: 12px;
   line-height: 1.35;
   z-index: 20;
-  pointer-events: none;
+  pointer-events: auto;
+}
+
+.body-hotspot-tooltip-close {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #64748b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.body-hotspot-tooltip-close:hover,
+.body-hotspot-tooltip-close:focus-visible {
+  background: #e2e8f0;
+  color: #172033;
+  outline: none;
 }
 
 .body-hotspot-tooltip strong {

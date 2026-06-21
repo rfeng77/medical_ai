@@ -2,7 +2,7 @@ import { runSelfTriageTurn } from "./agents/selfTriagePipeline";
 import { createEmptyParticipantMemory } from "./stores/memoryStore";
 import type { ParticipantMemory } from "./types/experiment";
 
-const caseId = "case_appendicitis_pattern";
+const caseId = "abd_004_appendicitis_high_high";
 
 const scenarios = [
   {

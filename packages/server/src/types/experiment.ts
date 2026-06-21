@@ -66,6 +66,9 @@ export type LeafFeatureMatch = {
   matched: boolean;
   status: "present" | "absent" | "uncertain" | "not_mentioned";
   matchConfidence: number;
+  detailCompletion?: number;
+  matchedDetails?: string[];
+  missingDetails?: string[];
   evidenceText: string[];
   explanation: string;
 };
@@ -75,7 +78,14 @@ export type LeafScore = {
   diagnosisGroup: string;
   triageLevel: string;
   score: number;
+  rawScore?: number;
+  posteriorProbability?: number;
+  positiveEvidence?: number;
+  negativeEvidence?: number;
+  totalPossibleImportance?: number;
   specificityScore: number;
+  excluded?: boolean;
+  exclusionReason?: string;
   matchedFeatures: LeafFeatureMatch[];
   missingKeyFeatures: string[];
   negativeOrContradictingFeatures: string[];
@@ -87,6 +97,11 @@ export type LeafMatchingAgentResult = {
   topLeaves: LeafScore[];
   allCandidateConditions: string[];
   globalReasoningSummary: string;
+  scoringSummary?: {
+    temperature: number;
+    entropy: number;
+    normalizedEntropy: number;
+  };
 };
 
 export type DecisionControllerResult = {
@@ -104,6 +119,20 @@ export type DecisionControllerResult = {
   suggestedQuestionFocus: string[];
   patientFacingInstruction: string;
   uncertaintyStatement: string;
+  followUpLogic?: {
+    ruleUsed: "no_meaningful_match" | "high_entropy_information_gain" | "low_entropy_confirm_top_disease";
+    entropy: number;
+    normalizedEntropy: number;
+    candidateFeatures: Array<{
+      featureKey: string;
+      disease: string;
+      questionValue: number;
+      posteriorProbability: number;
+      importanceScore: number;
+      uniquenessScore: number;
+      missingCompleteness: number;
+    }>;
+  };
 };
 
 export type AbdominalPainDecisionTreeLeaf = {
@@ -117,6 +146,16 @@ export type AbdominalPainDecisionTreeLeaf = {
   sourceDiagnoses?: string[];
   weighted_features?: Record<string, number>;
   weightedFeatures?: Record<string, number>;
+  feature_details?: Record<string, string[]>;
+  featureDetails?: Record<string, string[]>;
+  negative_features?: string[];
+  negativeFeatures?: string[];
+  hard_exclusion_features?: string[];
+  hardExclusionFeatures?: string[];
+  uniqueness_scores?: Record<string, number>;
+  uniquenessScores?: Record<string, number>;
+  symptom_details?: Record<string, Record<string, string>>;
+  symptomDetails?: Record<string, Record<string, string>>;
   keyFeatures?: string[];
   highSpecificityFeatures?: string[];
   safetyRedFlags?: string[];
@@ -131,6 +170,8 @@ export type AbdominalPainDecisionTreeLeaf = {
 export type AbdominalPainDecisionTree = {
   feature_aliases?: Record<string, string[]>;
   featureAliases?: Record<string, string[]>;
+  feature_independence?: Record<string, number>;
+  featureIndependence?: Record<string, number>;
   leaf_nodes?: AbdominalPainDecisionTreeLeaf[];
   leafNodes?: AbdominalPainDecisionTreeLeaf[];
   global_stopping_rule?: unknown;

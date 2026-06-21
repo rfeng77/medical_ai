@@ -1,211 +1,532 @@
 {
   "cases": [
     {
-      "caseId": "case_viral_gastroenteritis",
-      "label": "Simulated Case 1",
-      "openingComplaint": "I have stomach pain and feel nauseous.",
+      "caseId": "abd_004_appendicitis_high_high",
+      "label": "Selected Case 1: appendicitis",
+      "openingComplaint": "I have stomach pain that started earlier today. I am not sure what is causing it.",
+      "patientCard": {
+        "title": "Vague abdominal pain with hidden migration and fever",
+        "triageLevel": "A&E",
+        "department": "emergency_surgery"
+      },
       "groundTruth": {
-        "diagnosis": "viral gastroenteritis pattern",
-        "targetTriage": "Self-care"
-      },
-      "bodyMapClues": {
-        "upper_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The upper abdomen feels mildly crampy, but the pain is not sharp or fixed."
-        },
-        "lower_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The lower abdomen has mild cramping but no severe focal pain."
-        },
-        "right_lower_quadrant": {
-          "field": "pain_location",
-          "participantFacingText": "There is no fixed right-lower abdominal pain."
-        },
-        "left_lower_quadrant": {
-          "field": "pain_location",
-          "participantFacingText": "There is no focal left-lower abdominal tenderness."
-        },
-        "diffuse_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The discomfort is diffuse and crampy across the abdomen."
-        }
-      },
-      "symptomClues": {
-        "duration": {
-          "field": "duration",
-          "participantFacingText": "Symptoms started about 10 hours ago and are not rapidly worsening."
-        },
-        "vomiting": {
-          "field": "vomiting",
-          "participantFacingText": "There was one episode of vomiting, but small sips of water can stay down."
-        },
-        "diarrhea": {
-          "field": "diarrhea",
-          "participantFacingText": "There is watery diarrhea."
-        },
-        "bleeding": {
-          "field": "bleeding",
-          "participantFacingText": "There is no visible blood and no black stool."
-        },
-        "hydration": {
-          "field": "hydration",
-          "participantFacingText": "Urination is still normal, though the mouth feels slightly dry."
-        }
-      },
-      "structuredFeatures": {
-        "pain_location": "diffuse_abdomen",
-        "pain_quality": "crampy",
-        "duration": "10_hours",
-        "vomiting": "once",
-        "diarrhea": true,
-        "bleeding": false,
-        "hydration": "mild_dryness"
-      },
-      "fieldPriority": {
-
-        "pain_location": 4,
-
-        "pain_quality": 4,
-
-        "duration": 3,
-
-        "nausea": 3,
-
-        "diarrhea": 5,
-
-        "hydration": 5,
-
-        "urination": 3
-
-      }
-    },
-    {
-      "caseId": "case_appendicitis_pattern",
-      "label": "Simulated Case 2",
-      "openingComplaint": "I have stomach pain and nausea. At first it felt vague, but now I am more worried.",
-      "groundTruth": {
-        "diagnosis": "appendicitis-like pattern",
+        "diagnosis": "appendicitis",
         "targetTriage": "A&E"
       },
-      "bodyMapClues": {
-        "upper_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The upper abdomen is not the main pain location."
+      "structuredFeatures": {
+        "right_lower_quadrant_pain": {
+          "location": "The pain is now most noticeable in the right lower abdomen."
         },
-        "periumbilical": {
-          "field": "pain_migration",
-          "participantFacingText": "The pain started around the belly button earlier."
+        "pain_migration": {
+          "migration": "It began near the middle of the abdomen and moved toward the right lower side."
         },
-        "right_lower_quadrant": {
-          "field": "pain_location",
-          "participantFacingText": "The pain is now more fixed in the right lower abdomen."
+        "fever": {
+          "status": "present",
+          "detail": "There is a fever."
         },
-        "left_lower_quadrant": {
-          "field": "pain_location",
-          "participantFacingText": "The left lower abdomen is not the main pain location."
+        "nausea_vomiting": {
+          "status": "present",
+          "detail": "Nausea is present."
         },
-        "diffuse_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The whole abdomen is not rigid, but the right lower side feels worse."
+        "movement_pain_or_rebound_tenderness": {
+          "quality": "The pain is becoming sharper."
+        },
+        "worsening_course": {
+          "duration": "The pain began earlier today and is worsening."
+        },
+        "diarrhea": {
+          "status": "absent",
+          "detail": "No prominent diarrhea is reported."
+        },
+        "dysuria": {
+          "status": "absent",
+          "detail": "No painful urination is reported."
+        },
+        "pregnancy": {
+          "status": "absent",
+          "detail": "Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "status": "absent",
+          "detail": "No bleeding is reported."
+        },
+        "prior_abdominal_surgery": {
+          "status": "absent",
+          "detail": "No prior abdominal surgery is described."
         }
       },
       "symptomClues": {
-        "movement_pain": {
-          "field": "movement_pain",
-          "participantFacingText": "Walking, coughing, or bumps make the pain feel worse."
+        "right_lower_quadrant_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is now most noticeable in the right lower abdomen."
         },
-        "duration": {
-          "field": "duration",
-          "participantFacingText": "The pain started about 8 hours ago."
+        "pain_migration": {
+          "field": "other_symptoms",
+          "participantFacingText": "It began near the middle of the abdomen and moved toward the right lower side."
         },
         "fever": {
-          "field": "fever",
-          "participantFacingText": "There is a mild feverish feeling."
+          "field": "other_symptoms",
+          "participantFacingText": "present There is a fever."
         },
-        "vomiting": {
-          "field": "vomiting",
-          "participantFacingText": "There is nausea and low appetite, but vomiting is not the main symptom."
+        "nausea_vomiting": {
+          "field": "other_symptoms",
+          "participantFacingText": "present Nausea is present."
+        },
+        "movement_pain_or_rebound_tenderness": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is becoming sharper."
+        },
+        "worsening_course": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain began earlier today and is worsening."
+        },
+        "diarrhea": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No prominent diarrhea is reported."
+        },
+        "dysuria": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No painful urination is reported."
+        },
+        "pregnancy": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Pregnancy is not relevant in this case."
         },
         "bleeding": {
-          "field": "bleeding",
-          "participantFacingText": "There is no black stool and no visible blood."
+          "field": "other_symptoms",
+          "participantFacingText": "absent No bleeding is reported."
+        },
+        "prior_abdominal_surgery": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No prior abdominal surgery is described."
         }
       },
-      "structuredFeatures": {
-        "pain_location": "right_lower_quadrant",
-        "pain_migration": "periumbilical_to_right_lower_quadrant",
-        "movement_pain": true,
-        "duration": "8_hours",
-        "fever": "mild",
-        "vomiting": "nausea_low_appetite",
-        "bleeding": false
-      },
       "fieldPriority": {
-        "pain_location": 5,
-        "pain_migration": 5,
-        "movement_pain": 5,
-        "duration": 3,
-        "fever": 4,
-        "vomiting": 4,
-        "bleeding": 5,
-        "red_flags": 5
+        "right_lower_quadrant_pain": 100,
+        "pain_migration": 100,
+        "fever": 75,
+        "nausea_vomiting": 70,
+        "movement_pain_or_rebound_tenderness": 100,
+        "worsening_course": 50,
+        "diarrhea": 55,
+        "dysuria": 55,
+        "pregnancy": 50,
+        "bleeding": 65,
+        "prior_abdominal_surgery": 45
       }
     },
     {
-      "caseId": "case_gi_bleed_pattern",
-      "label": "Simulated Case 3",
-      "openingComplaint": "I have upper stomach pain and feel dizzy.",
-      "groundTruth": {
-        "diagnosis": "upper gastrointestinal bleeding pattern",
-        "targetTriage": "Ambulance"
+      "caseId": "abd_006_cholecystitis_high_high",
+      "label": "Selected Case 2: acute cholecystitis biliary disease",
+      "openingComplaint": "I have upper abdominal pain after eating, and it has happened a few times before.",
+      "patientCard": {
+        "title": "Upper abdominal pain after fatty meals with hidden fever",
+        "triageLevel": "A&E",
+        "department": "emergency_general_surgery"
       },
-      "bodyMapClues": {
-        "upper_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "There is burning upper abdominal pain."
+      "groundTruth": {
+        "diagnosis": "acute_cholecystitis_biliary_disease",
+        "targetTriage": "A&E"
+      },
+      "structuredFeatures": {
+        "right_upper_quadrant_pain": {
+          "location": "The pain is mainly in the right upper abdomen."
         },
-        "lower_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The lower abdomen is not the main pain location."
+        "postprandial_pain": {
+          "duration": "This episode has lasted several hours."
         },
-        "diffuse_abdomen": {
-          "field": "pain_location",
-          "participantFacingText": "The pain is not mainly a diffuse cramping pattern."
+        "fever": {
+          "status": "present",
+          "detail": "There is a fever."
+        },
+        "nausea": {
+          "status": "present",
+          "detail": "Nausea is present."
+        },
+        "shoulder_or_back_radiation": {
+          "migration": "The pain may go toward the right shoulder."
+        },
+        "prolonged_episode": {
+          "duration": "This episode has lasted several hours."
+        },
+        "diarrhea": {
+          "status": "absent",
+          "detail": "No diarrhea is reported."
+        },
+        "urinary_symptoms": {
+          "status": "absent",
+          "detail": "No urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "status": "absent",
+          "detail": "Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "status": "absent",
+          "detail": "No bleeding is reported."
+        },
+        "shock": {
+          "status": "absent",
+          "detail": "No shock is described."
         }
       },
       "symptomClues": {
+        "right_upper_quadrant_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is mainly in the right upper abdomen."
+        },
+        "postprandial_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "This episode has lasted several hours."
+        },
+        "fever": {
+          "field": "other_symptoms",
+          "participantFacingText": "present There is a fever."
+        },
+        "nausea": {
+          "field": "other_symptoms",
+          "participantFacingText": "present Nausea is present."
+        },
+        "shoulder_or_back_radiation": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain may go toward the right shoulder."
+        },
+        "prolonged_episode": {
+          "field": "other_symptoms",
+          "participantFacingText": "This episode has lasted several hours."
+        },
+        "diarrhea": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No diarrhea is reported."
+        },
+        "urinary_symptoms": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Pregnancy is not relevant in this case."
+        },
         "bleeding": {
-          "field": "bleeding",
-          "participantFacingText": "The stool looks black, sticky, and unusually foul-smelling."
+          "field": "other_symptoms",
+          "participantFacingText": "absent No bleeding is reported."
         },
-        "vomiting": {
-          "field": "vomiting",
-          "participantFacingText": "There was dark vomit that looked like coffee grounds."
-        },
-        "dizziness": {
-          "field": "dizziness",
-          "participantFacingText": "Standing up causes lightheadedness."
-        },
-        "medication": {
-          "field": "medication",
-          "participantFacingText": "There has been frequent ibuprofen use, and there is also a blood thinner."
+        "shock": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No shock is described."
         }
       },
+      "fieldPriority": {
+        "right_upper_quadrant_pain": 100,
+        "postprandial_pain": 70,
+        "fever": 75,
+        "nausea": 70,
+        "shoulder_or_back_radiation": 70,
+        "prolonged_episode": 75,
+        "diarrhea": 55,
+        "urinary_symptoms": 55,
+        "pregnancy": 50,
+        "bleeding": 65,
+        "shock": 75
+      }
+    },
+    {
+      "caseId": "new_d05_mesenteric_ischemia",
+      "label": "Selected Case 3: acute mesenteric ischemia",
+      "openingComplaint": "I have sudden belly pain that feels hard to describe, and it worries me.",
+      "patientCard": {
+        "title": "Vague belly pain revealing pain out of proportion",
+        "triageLevel": "A&E",
+        "department": "emergency_vascular_surgery_or_general_surgery"
+      },
+      "groundTruth": {
+        "diagnosis": "acute_mesenteric_ischemia",
+        "targetTriage": "A&E"
+      },
       "structuredFeatures": {
-        "pain_location": "upper_abdomen",
-        "pain_quality": "burning",
-        "bleeding": true,
-        "vomiting": "coffee_ground",
-        "dizziness": true,
-        "medication": "nsaid_and_blood_thinner"
+        "sudden_severe_pain": {
+          "quality": "Pain is severe and seems out of proportion to early visible findings.",
+          "duration": "Symptoms began suddenly today."
+        },
+        "diffuse_abdominal_pain": {
+          "location": "The pain is diffuse and severe."
+        },
+        "pain_out_of_proportion": {
+          "quality": "Pain is severe and seems out of proportion to early visible findings."
+        },
+        "vascular_risk_factors": {
+          "detail": "Older age or atrial fibrillation is a risk factor."
+        },
+        "vomiting_or_diarrhea": {
+          "detail": "Bowel changes may include urgent stool or blood later."
+        },
+        "ill_appearance": {
+          "detail": "The person appears very ill or has severe pain."
+        },
+        "urinary_symptoms": {
+          "status": "absent",
+          "detail": "No urinary symptoms are primary."
+        },
+        "pregnancy": {
+          "status": "absent",
+          "detail": "Pregnancy is not relevant in this case."
+        }
+      },
+      "symptomClues": {
+        "sudden_severe_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "Pain is severe and seems out of proportion to early visible findings. Symptoms began suddenly today."
+        },
+        "diffuse_abdominal_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is diffuse and severe."
+        },
+        "pain_out_of_proportion": {
+          "field": "other_symptoms",
+          "participantFacingText": "Pain is severe and seems out of proportion to early visible findings."
+        },
+        "vascular_risk_factors": {
+          "field": "other_symptoms",
+          "participantFacingText": "Older age or atrial fibrillation is a risk factor."
+        },
+        "vomiting_or_diarrhea": {
+          "field": "other_symptoms",
+          "participantFacingText": "Bowel changes may include urgent stool or blood later."
+        },
+        "ill_appearance": {
+          "field": "other_symptoms",
+          "participantFacingText": "The person appears very ill or has severe pain."
+        },
+        "urinary_symptoms": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No urinary symptoms are primary."
+        },
+        "pregnancy": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Pregnancy is not relevant in this case."
+        }
       },
       "fieldPriority": {
-        "pain_location": 4,
-        "bleeding": 5,
-        "vomiting": 5,
-        "dizziness": 5,
-        "medication": 4,
-        "red_flags": 5
+        "sudden_severe_pain": 95,
+        "diffuse_abdominal_pain": 75,
+        "pain_out_of_proportion": 100,
+        "vascular_risk_factors": 95,
+        "vomiting_or_diarrhea": 50,
+        "ill_appearance": 70,
+        "urinary_symptoms": 55,
+        "pregnancy": 50
+      }
+    },
+    {
+      "caseId": "new_d07_diverticulitis",
+      "label": "Selected Case 4: diverticulitis",
+      "openingComplaint": "I have lower abdominal pain and feel generally unwell.",
+      "patientCard": {
+        "title": "Vague lower pain revealing febrile diverticulitis",
+        "triageLevel": "A&E",
+        "department": "emergency_gastroenterology_or_general_surgery"
+      },
+      "groundTruth": {
+        "diagnosis": "diverticulitis",
+        "targetTriage": "A&E"
+      },
+      "structuredFeatures": {
+        "left_lower_quadrant_pain": {
+          "location": "The pain is mainly in the left lower abdomen."
+        },
+        "fever": {
+          "status": "present",
+          "detail": "Fever may be present in the higher-risk version."
+        },
+        "altered_bowel_habits": {
+          "detail": "Constipation or altered bowel habits are present."
+        },
+        "worsening_tenderness": {
+          "quality": "It is steady and tender."
+        },
+        "older_age_or_prior_history": {
+          "detail": "Older age or prior diverticulitis may be relevant."
+        },
+        "primary_urinary_symptoms": {
+          "status": "absent",
+          "detail": "No primary urinary symptoms are reported."
+        },
+        "urinary_symptoms": {
+          "status": "absent",
+          "detail": "No primary urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "status": "absent",
+          "detail": "Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "status": "absent",
+          "detail": "No major bleeding is described."
+        }
+      },
+      "symptomClues": {
+        "left_lower_quadrant_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is mainly in the left lower abdomen."
+        },
+        "fever": {
+          "field": "other_symptoms",
+          "participantFacingText": "present Fever may be present in the higher-risk version."
+        },
+        "altered_bowel_habits": {
+          "field": "other_symptoms",
+          "participantFacingText": "Constipation or altered bowel habits are present."
+        },
+        "worsening_tenderness": {
+          "field": "other_symptoms",
+          "participantFacingText": "It is steady and tender."
+        },
+        "older_age_or_prior_history": {
+          "field": "other_symptoms",
+          "participantFacingText": "Older age or prior diverticulitis may be relevant."
+        },
+        "primary_urinary_symptoms": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No primary urinary symptoms are reported."
+        },
+        "urinary_symptoms": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No primary urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No major bleeding is described."
+        }
+      },
+      "fieldPriority": {
+        "left_lower_quadrant_pain": 100,
+        "fever": 75,
+        "altered_bowel_habits": 70,
+        "worsening_tenderness": 75,
+        "older_age_or_prior_history": 50,
+        "primary_urinary_symptoms": 50,
+        "urinary_symptoms": 50,
+        "pregnancy": 50,
+        "bleeding": 65
+      }
+    },
+    {
+      "caseId": "new_d08_acute_pancreatitis",
+      "label": "Selected Case 5: acute pancreatitis",
+      "openingComplaint": "My upper stomach hurts and I feel sick, but I am not sure what matters.",
+      "patientCard": {
+        "title": "Vague upper pain revealing pancreatitis",
+        "triageLevel": "A&E",
+        "department": "emergency_gastroenterology"
+      },
+      "groundTruth": {
+        "diagnosis": "acute_pancreatitis",
+        "targetTriage": "A&E"
+      },
+      "structuredFeatures": {
+        "epigastric_pain": {
+          "location": "The pain is in the upper middle abdomen."
+        },
+        "radiation_to_back": {
+          "migration": "The pain radiates to the back."
+        },
+        "severe_persistent_pain": {
+          "quality": "It is severe and persistent.",
+          "duration": "The pain started today and has not settled."
+        },
+        "vomiting": {
+          "status": "present",
+          "detail": "Repeated vomiting is present."
+        },
+        "very_unwell_appearance": {
+          "detail": "The person feels very unwell."
+        },
+        "alcohol_or_gallstone_risk_factors": {
+          "detail": "Recent heavy alcohol use or gallstones should be checked."
+        },
+        "fever": {
+          "status": "absent",
+          "detail": "Fever is not the main discriminating fact."
+        },
+        "diarrhea": {
+          "status": "absent",
+          "detail": "No diarrhea is the main symptom."
+        },
+        "urinary_symptoms": {
+          "status": "absent",
+          "detail": "No urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "status": "absent",
+          "detail": "Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "status": "absent",
+          "detail": "No bleeding is reported."
+        }
+      },
+      "symptomClues": {
+        "epigastric_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain is in the upper middle abdomen."
+        },
+        "radiation_to_back": {
+          "field": "other_symptoms",
+          "participantFacingText": "The pain radiates to the back."
+        },
+        "severe_persistent_pain": {
+          "field": "other_symptoms",
+          "participantFacingText": "It is severe and persistent. The pain started today and has not settled."
+        },
+        "vomiting": {
+          "field": "other_symptoms",
+          "participantFacingText": "present Repeated vomiting is present."
+        },
+        "very_unwell_appearance": {
+          "field": "other_symptoms",
+          "participantFacingText": "The person feels very unwell."
+        },
+        "alcohol_or_gallstone_risk_factors": {
+          "field": "other_symptoms",
+          "participantFacingText": "Recent heavy alcohol use or gallstones should be checked."
+        },
+        "fever": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Fever is not the main discriminating fact."
+        },
+        "diarrhea": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No diarrhea is the main symptom."
+        },
+        "urinary_symptoms": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No urinary symptoms are reported."
+        },
+        "pregnancy": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent Pregnancy is not relevant in this case."
+        },
+        "bleeding": {
+          "field": "other_symptoms",
+          "participantFacingText": "absent No bleeding is reported."
+        }
+      },
+      "fieldPriority": {
+        "epigastric_pain": 100,
+        "radiation_to_back": 100,
+        "severe_persistent_pain": 100,
+        "vomiting": 75,
+        "very_unwell_appearance": 70,
+        "alcohol_or_gallstone_risk_factors": 50,
+        "fever": 60,
+        "diarrhea": 100,
+        "urinary_symptoms": 55,
+        "pregnancy": 50,
+        "bleeding": 65
       }
     }
   ]

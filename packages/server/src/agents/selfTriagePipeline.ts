@@ -93,10 +93,24 @@ const symptomToClinicalField: Record<string, ClinicalField> = {
   burning_or_indigestion: "pain_quality",
   right_lower_abdominal_pain: "pain_location",
   left_lower_abdominal_pain: "pain_location",
+  right_upper_quadrant_pain: "pain_location",
+  diffuse_abdominal_pain: "pain_location",
   flank_or_groin_pain: "pain_location",
   painful_bulge: "other_symptoms",
   pain_migration: "pain_migration",
+  radiation_to_back: "pain_migration",
+  shoulder_or_back_radiation: "pain_migration",
   movement_worsens_pain: "movement_pain",
+  postprandial_pain: "duration",
+  prolonged_episode: "duration",
+  pain_out_of_proportion: "pain_quality",
+  sudden_severe_pain: "pain_quality",
+  vascular_risk_factors: "medical_history",
+  ill_appearance: "red_flags",
+  altered_bowel_habits: "bowel_movement",
+  worsening_tenderness: "pain_quality",
+  older_age_or_prior_history: "medical_history",
+  alcohol_or_gallstone_risk_factors: "medical_history",
   nausea: "nausea",
   vomiting: "vomiting",
   diarrhea: "diarrhea",
@@ -180,11 +194,13 @@ function ensureCaseScopedMemory(memory: ParticipantMemory, caseId: string): Part
 export async function runSelfTriageTurn({
   message,
   memory,
-  caseId
+  caseId,
+  onResponseToken
 }: {
   message: string;
   memory: ParticipantMemory;
   caseId: string;
+  onResponseToken?: (chunk: string) => void;
 }): Promise<{
   updatedMemory: ParticipantMemory;
   extractionResult: SymptomExtractionAgentResult;
@@ -222,7 +238,8 @@ export async function runSelfTriageTurn({
     memory: symptomUpdatedMemory,
     extractionResult,
     matchingResult,
-    decisionResult
+    decisionResult,
+    onToken: onResponseToken
   });
 
   const timestamp = new Date().toISOString();

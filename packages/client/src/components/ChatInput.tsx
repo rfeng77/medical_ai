@@ -3,9 +3,10 @@ import { useState } from 'react'
 type ChatInputProps = {
   disabled: boolean
   onSend: (message: string) => void
+  placeholder?: string
 }
 
-export function ChatInput({ disabled, onSend }: ChatInputProps) {
+export function ChatInput({ disabled, onSend, placeholder }: ChatInputProps) {
   const [value, setValue] = useState('')
 
   function submit() {
@@ -19,7 +20,7 @@ export function ChatInput({ disabled, onSend }: ChatInputProps) {
     <div className="chat-input">
       <textarea
         aria-label="Patient message"
-        placeholder={disabled ? 'Trial is locked' : 'Type patient response...'}
+        placeholder={disabled ? 'Trial is locked' : placeholder ?? 'Type patient response...'}
         value={value}
         disabled={disabled}
         onChange={(event) => setValue(event.target.value)}

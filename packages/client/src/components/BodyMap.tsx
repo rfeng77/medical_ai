@@ -16,6 +16,7 @@ type BodyMapProps = {
   participantId: string;
   sessionId: string;
   revealedClues: RevealedClue[];
+  disabled?: boolean;
   onReveal: (clue: RevealedClue) => void;
 };
 
@@ -47,15 +48,24 @@ export function BodyMap({
   participantId,
   sessionId,
   revealedClues,
+  disabled = false,
   onReveal,
 }: BodyMapProps) {
-  const [hoveredHotspot, setHoveredHotspot] = useState<BodyHotspot | null>(
+  const [selectedHotspot, setSelectedHotspot] = useState<BodyHotspot | null>(
     null,
   );
 
-  async function handleRevealRegion(hotspot: BodyHotspot) {
+  async function handleRegionClick(hotspot: BodyHotspot) {
     const detail = currentCase.regions[hotspot.inquiryKey] ?? BODY_REGION_FINDINGS[hotspot.inquiryKey]
-    if (!detail || revealedClues.some((item) => item.id === hotspot.inquiryKey)) return
+    const revealed = revealedClues.some((item) => item.id === hotspot.inquiryKey)
+
+    if (!detail) return
+
+    setSelectedHotspot(hotspot)
+
+    if (revealed) return
+
+    if (disabled) return
 
     onReveal({
       id: hotspot.inquiryKey,
@@ -80,44 +90,62 @@ export function BodyMap({
       <div className="body-svg-wrapper">
         <HumanBodySvg />
 
-        {BODY_HOTSPOTS.map((hotspot, index) => (
-          <button
-            key={hotspot.id}
-            type="button"
-            className="body-region-marker"
-            style={{
-              left: `${hotspot.x}%`,
-              top: `${hotspot.y}%`,
-              ...BODY_MARKER_CSS_VARIABLES,
-              "--marker-width": `${hotspot.width ?? BODY_MARKER_STYLE.other.width}px`,
-              "--marker-height": `${hotspot.height ?? BODY_MARKER_STYLE.other.height}px`,
-            } as BodyMarkerCssProperties}
-            aria-label={hotspot.label}
-            title={hotspot.label}
-            onMouseEnter={() => setHoveredHotspot(hotspot)}
-            onMouseLeave={() => setHoveredHotspot(null)}
-            onFocus={() => setHoveredHotspot(hotspot)}
-            onBlur={() => setHoveredHotspot(null)}
-            onClick={() => void handleRevealRegion(hotspot)}
-          >
-            <span className="body-region-marker-dot">
-              {hotspot.markerLabel ?? index + 1}
-            </span>
-          </button>
-        ))}
+        {BODY_HOTSPOTS.map((hotspot, index) => {
+          const revealed = revealedClues.some(
+            (item) => item.id === hotspot.inquiryKey,
+          );
+          const markerDisabled = disabled && !revealed;
 
-        {hoveredHotspot ? (
+          return (
+            <button
+              key={hotspot.id}
+              type="button"
+              className={`body-region-marker${revealed ? " revealed" : ""}`}
+              style={{
+                left: `${hotspot.x}%`,
+                top: `${hotspot.y}%`,
+                ...BODY_MARKER_CSS_VARIABLES,
+                "--marker-width": `${hotspot.width ?? BODY_MARKER_STYLE.other.width}px`,
+                "--marker-height": `${hotspot.height ?? BODY_MARKER_STYLE.other.height}px`,
+              } as BodyMarkerCssProperties}
+              aria-label={hotspot.label}
+              disabled={markerDisabled}
+              title={
+                revealed
+                  ? hotspot.label
+                  : disabled
+                    ? "Chat with the AI before revealing another body-map point"
+                    : hotspot.label
+              }
+              onClick={() => void handleRegionClick(hotspot)}
+            >
+              <span className="body-region-marker-dot">
+                {hotspot.markerLabel ?? index + 1}
+              </span>
+            </button>
+          );
+        })}
+
+        {selectedHotspot ? (
           <div
             className="body-hotspot-tooltip"
             style={{
-              left: `${hoveredHotspot.x}%`,
-              top: `${hoveredHotspot.y}%`,
+              left: `${selectedHotspot.x}%`,
+              top: `${selectedHotspot.y}%`,
             }}
           >
-            <strong>{hoveredHotspot.label}</strong>
+            <button
+              type="button"
+              className="body-hotspot-tooltip-close"
+              aria-label="Close body-map detail"
+              onClick={() => setSelectedHotspot(null)}
+            >
+              ×
+            </button>
+            <strong>{selectedHotspot.label}</strong>
             <span>
-              {currentCase.regions[hoveredHotspot.inquiryKey] ??
-                BODY_REGION_FINDINGS[hoveredHotspot.inquiryKey]}
+              {currentCase.regions[selectedHotspot.inquiryKey] ??
+                BODY_REGION_FINDINGS[selectedHotspot.inquiryKey]}
             </span>
           </div>
         ) : null}

@@ -1,0 +1,637 @@
+[
+  {
+    "case_id": "abd_004_appendicitis_high_high",
+    "disease_label": "appendicitis",
+    "title": "Vague abdominal pain with hidden migration and fever",
+    "basic_information": {
+      "triage_level": "emergency",
+      "department": "emergency_surgery",
+      "future_state_score": 9.6
+    },
+    "initial_information": "I have stomach pain that started earlier today. I am not sure what is causing it.",
+    "initial_symptoms_json": [
+      {
+        "symptom": "worsening_course",
+        "status": "present"
+      }
+    ],
+    "positive_symptoms_json": [
+      {
+        "symptom": "right_lower_quadrant_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "pain_migration",
+        "status": "present"
+      },
+      {
+        "symptom": "fever",
+        "status": "present"
+      },
+      {
+        "symptom": "nausea_vomiting",
+        "status": "present"
+      },
+      {
+        "symptom": "movement_pain_or_rebound_tenderness",
+        "status": "present"
+      },
+      {
+        "symptom": "worsening_course",
+        "status": "present"
+      }
+    ],
+    "negative_symptoms_json": [
+      {
+        "symptom": "diarrhea",
+        "status": "absent"
+      },
+      {
+        "symptom": "dysuria",
+        "status": "absent"
+      },
+      {
+        "symptom": "pregnancy",
+        "status": "absent"
+      },
+      {
+        "symptom": "bleeding",
+        "status": "absent"
+      },
+      {
+        "symptom": "prior_abdominal_surgery",
+        "status": "absent"
+      }
+    ],
+    "symptom_details_json": {
+      "right_lower_quadrant_pain": {
+        "location": "The pain is now most noticeable in the right lower abdomen."
+      },
+      "pain_migration": {
+        "migration": "It began near the middle of the abdomen and moved toward the right lower side."
+      },
+      "fever": {
+        "status": "present",
+        "detail": "There is a fever."
+      },
+      "nausea_vomiting": {
+        "status": "present",
+        "detail": "Nausea is present."
+      },
+      "movement_pain_or_rebound_tenderness": {
+        "quality": "The pain is becoming sharper."
+      },
+      "worsening_course": {
+        "duration": "The pain began earlier today and is worsening."
+      },
+      "diarrhea": {
+        "status": "absent",
+        "detail": "No prominent diarrhea is reported."
+      },
+      "dysuria": {
+        "status": "absent",
+        "detail": "No painful urination is reported."
+      },
+      "pregnancy": {
+        "status": "absent",
+        "detail": "Pregnancy is not relevant in this case."
+      },
+      "bleeding": {
+        "status": "absent",
+        "detail": "No bleeding is reported."
+      },
+      "prior_abdominal_surgery": {
+        "status": "absent",
+        "detail": "No prior abdominal surgery is described."
+      }
+    },
+    "importance_scores_json": {
+      "right_lower_quadrant_pain": 100,
+      "pain_migration": 100,
+      "fever": 75,
+      "nausea_vomiting": 70,
+      "movement_pain_or_rebound_tenderness": 100,
+      "worsening_course": 50,
+      "diarrhea": 55,
+      "dysuria": 55,
+      "pregnancy": 50,
+      "bleeding": 65,
+      "prior_abdominal_surgery": 45
+    },
+    "uniqueness_scores_json": {
+      "right_lower_quadrant_pain": 94,
+      "pain_migration": 94,
+      "fever": 68,
+      "nausea_vomiting": 94,
+      "movement_pain_or_rebound_tenderness": 94,
+      "worsening_course": 94,
+      "diarrhea": 84,
+      "dysuria": 90,
+      "pregnancy": 100,
+      "bleeding": 100,
+      "prior_abdominal_surgery": 100
+    },
+    "red_flags_json": [
+      "right_lower_quadrant_pain",
+      "migration",
+      "fever",
+      "movement_pain"
+    ]
+  },
+  {
+    "case_id": "abd_006_cholecystitis_high_high",
+    "disease_label": "acute_cholecystitis_biliary_disease",
+    "title": "Upper abdominal pain after fatty meals with hidden fever",
+    "basic_information": {
+      "triage_level": "emergency",
+      "department": "emergency_general_surgery",
+      "future_state_score": 7.68
+    },
+    "initial_information": "I have upper abdominal pain after eating, and it has happened a few times before.",
+    "initial_symptoms_json": [
+      {
+        "symptom": "postprandial_pain",
+        "status": "present"
+      }
+    ],
+    "positive_symptoms_json": [
+      {
+        "symptom": "right_upper_quadrant_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "postprandial_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "fever",
+        "status": "present"
+      },
+      {
+        "symptom": "nausea",
+        "status": "present"
+      },
+      {
+        "symptom": "shoulder_or_back_radiation",
+        "status": "present"
+      },
+      {
+        "symptom": "prolonged_episode",
+        "status": "present"
+      }
+    ],
+    "negative_symptoms_json": [
+      {
+        "symptom": "diarrhea",
+        "status": "absent"
+      },
+      {
+        "symptom": "urinary_symptoms",
+        "status": "absent"
+      },
+      {
+        "symptom": "pregnancy",
+        "status": "absent"
+      },
+      {
+        "symptom": "bleeding",
+        "status": "absent"
+      },
+      {
+        "symptom": "shock",
+        "status": "absent"
+      }
+    ],
+    "symptom_details_json": {
+      "right_upper_quadrant_pain": {
+        "location": "The pain is mainly in the right upper abdomen."
+      },
+      "postprandial_pain": {
+        "duration": "This episode has lasted several hours."
+      },
+      "fever": {
+        "status": "present",
+        "detail": "There is a fever."
+      },
+      "nausea": {
+        "status": "present",
+        "detail": "Nausea is present."
+      },
+      "shoulder_or_back_radiation": {
+        "migration": "The pain may go toward the right shoulder."
+      },
+      "prolonged_episode": {
+        "duration": "This episode has lasted several hours."
+      },
+      "diarrhea": {
+        "status": "absent",
+        "detail": "No diarrhea is reported."
+      },
+      "urinary_symptoms": {
+        "status": "absent",
+        "detail": "No urinary symptoms are reported."
+      },
+      "pregnancy": {
+        "status": "absent",
+        "detail": "Pregnancy is not relevant in this case."
+      },
+      "bleeding": {
+        "status": "absent",
+        "detail": "No bleeding is reported."
+      },
+      "shock": {
+        "status": "absent",
+        "detail": "No shock is described."
+      }
+    },
+    "importance_scores_json": {
+      "right_upper_quadrant_pain": 100,
+      "postprandial_pain": 70,
+      "fever": 75,
+      "nausea": 70,
+      "shoulder_or_back_radiation": 70,
+      "prolonged_episode": 75,
+      "diarrhea": 55,
+      "urinary_symptoms": 55,
+      "pregnancy": 50,
+      "bleeding": 65,
+      "shock": 75
+    },
+    "uniqueness_scores_json": {
+      "right_upper_quadrant_pain": 97,
+      "postprandial_pain": 97,
+      "fever": 68,
+      "nausea": 97,
+      "shoulder_or_back_radiation": 97,
+      "prolonged_episode": 97,
+      "diarrhea": 84,
+      "urinary_symptoms": 100,
+      "pregnancy": 100,
+      "bleeding": 100,
+      "shock": 100
+    },
+    "red_flags_json": [
+      "right_upper_quadrant_pain",
+      "fever",
+      "prolonged_episode"
+    ]
+  },
+  {
+    "case_id": "new_d05_mesenteric_ischemia",
+    "disease_label": "acute_mesenteric_ischemia",
+    "title": "Vague belly pain revealing pain out of proportion",
+    "basic_information": {
+      "triage_level": "emergency",
+      "department": "emergency_vascular_surgery_or_general_surgery",
+      "future_state_score": 50
+    },
+    "initial_information": "I have sudden belly pain that feels hard to describe, and it worries me.",
+    "initial_symptoms_json": [
+      {
+        "symptom": "sudden_severe_pain",
+        "status": "present"
+      }
+    ],
+    "positive_symptoms_json": [
+      {
+        "symptom": "sudden_severe_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "diffuse_abdominal_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "pain_out_of_proportion",
+        "status": "present"
+      },
+      {
+        "symptom": "vascular_risk_factors",
+        "status": "present"
+      },
+      {
+        "symptom": "vomiting_or_diarrhea",
+        "status": "present"
+      },
+      {
+        "symptom": "ill_appearance",
+        "status": "present"
+      }
+    ],
+    "negative_symptoms_json": [
+      {
+        "symptom": "urinary_symptoms",
+        "status": "absent"
+      },
+      {
+        "symptom": "pregnancy",
+        "status": "absent"
+      }
+    ],
+    "symptom_details_json": {
+      "sudden_severe_pain": {
+        "quality": "Pain is severe and seems out of proportion to early visible findings.",
+        "duration": "Symptoms began suddenly today."
+      },
+      "diffuse_abdominal_pain": {
+        "location": "The pain is diffuse and severe."
+      },
+      "pain_out_of_proportion": {
+        "quality": "Pain is severe and seems out of proportion to early visible findings."
+      },
+      "vascular_risk_factors": {
+        "detail": "Older age or atrial fibrillation is a risk factor."
+      },
+      "vomiting_or_diarrhea": {
+        "detail": "Bowel changes may include urgent stool or blood later."
+      },
+      "ill_appearance": {
+        "detail": "The person appears very ill or has severe pain."
+      },
+      "urinary_symptoms": {
+        "status": "absent",
+        "detail": "No urinary symptoms are primary."
+      },
+      "pregnancy": {
+        "status": "absent",
+        "detail": "Pregnancy is not relevant in this case."
+      }
+    },
+    "importance_scores_json": {
+      "sudden_severe_pain": 95,
+      "diffuse_abdominal_pain": 75,
+      "pain_out_of_proportion": 100,
+      "vascular_risk_factors": 95,
+      "vomiting_or_diarrhea": 50,
+      "ill_appearance": 70,
+      "urinary_symptoms": 55,
+      "pregnancy": 50
+    },
+    "uniqueness_scores_json": {
+      "sudden_severe_pain": 97,
+      "diffuse_abdominal_pain": 97,
+      "pain_out_of_proportion": 97,
+      "vascular_risk_factors": 97,
+      "vomiting_or_diarrhea": 97,
+      "ill_appearance": 97,
+      "urinary_symptoms": 100,
+      "pregnancy": 100
+    },
+    "red_flags_json": [
+      "sudden_severe_diffuse_pain",
+      "pain_out_of_proportion",
+      "vascular_risk_factor"
+    ]
+  },
+  {
+    "case_id": "new_d07_diverticulitis",
+    "disease_label": "diverticulitis",
+    "title": "Vague lower pain revealing febrile diverticulitis",
+    "basic_information": {
+      "triage_level": "emergency",
+      "department": "emergency_gastroenterology_or_general_surgery",
+      "future_state_score": 6
+    },
+    "initial_information": "I have lower abdominal pain and feel generally unwell.",
+    "initial_symptoms_json": [],
+    "positive_symptoms_json": [
+      {
+        "symptom": "left_lower_quadrant_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "fever",
+        "status": "present"
+      },
+      {
+        "symptom": "altered_bowel_habits",
+        "status": "present"
+      },
+      {
+        "symptom": "worsening_tenderness",
+        "status": "present"
+      },
+      {
+        "symptom": "older_age_or_prior_history",
+        "status": "present"
+      }
+    ],
+    "negative_symptoms_json": [
+      {
+        "symptom": "primary_urinary_symptoms",
+        "status": "absent"
+      },
+      {
+        "symptom": "urinary_symptoms",
+        "status": "absent"
+      },
+      {
+        "symptom": "pregnancy",
+        "status": "absent"
+      },
+      {
+        "symptom": "bleeding",
+        "status": "absent"
+      }
+    ],
+    "symptom_details_json": {
+      "left_lower_quadrant_pain": {
+        "location": "The pain is mainly in the left lower abdomen."
+      },
+      "fever": {
+        "status": "present",
+        "detail": "Fever may be present in the higher-risk version."
+      },
+      "altered_bowel_habits": {
+        "detail": "Constipation or altered bowel habits are present."
+      },
+      "worsening_tenderness": {
+        "quality": "It is steady and tender."
+      },
+      "older_age_or_prior_history": {
+        "detail": "Older age or prior diverticulitis may be relevant."
+      },
+      "primary_urinary_symptoms": {
+        "status": "absent",
+        "detail": "No primary urinary symptoms are reported."
+      },
+      "urinary_symptoms": {
+        "status": "absent",
+        "detail": "No primary urinary symptoms are reported."
+      },
+      "pregnancy": {
+        "status": "absent",
+        "detail": "Pregnancy is not relevant in this case."
+      },
+      "bleeding": {
+        "status": "absent",
+        "detail": "No major bleeding is described."
+      }
+    },
+    "importance_scores_json": {
+      "left_lower_quadrant_pain": 100,
+      "fever": 75,
+      "altered_bowel_habits": 70,
+      "worsening_tenderness": 75,
+      "older_age_or_prior_history": 50,
+      "primary_urinary_symptoms": 50,
+      "urinary_symptoms": 50,
+      "pregnancy": 50,
+      "bleeding": 65
+    },
+    "uniqueness_scores_json": {
+      "left_lower_quadrant_pain": 100,
+      "fever": 68,
+      "altered_bowel_habits": 100,
+      "worsening_tenderness": 100,
+      "older_age_or_prior_history": 100,
+      "primary_urinary_symptoms": 100,
+      "urinary_symptoms": 100,
+      "pregnancy": 100,
+      "bleeding": 100
+    },
+    "red_flags_json": [
+      "left_lower_quadrant_pain",
+      "fever",
+      "worsening_tenderness"
+    ]
+  },
+  {
+    "case_id": "new_d08_acute_pancreatitis",
+    "disease_label": "acute_pancreatitis",
+    "title": "Vague upper pain revealing pancreatitis",
+    "basic_information": {
+      "triage_level": "emergency",
+      "department": "emergency_gastroenterology",
+      "future_state_score": 12
+    },
+    "initial_information": "My upper stomach hurts and I feel sick, but I am not sure what matters.",
+    "initial_symptoms_json": [
+      {
+        "symptom": "epigastric_pain",
+        "status": "present"
+      }
+    ],
+    "positive_symptoms_json": [
+      {
+        "symptom": "epigastric_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "radiation_to_back",
+        "status": "present"
+      },
+      {
+        "symptom": "severe_persistent_pain",
+        "status": "present"
+      },
+      {
+        "symptom": "vomiting",
+        "status": "present"
+      },
+      {
+        "symptom": "very_unwell_appearance",
+        "status": "present"
+      },
+      {
+        "symptom": "alcohol_or_gallstone_risk_factors",
+        "status": "present"
+      }
+    ],
+    "negative_symptoms_json": [
+      {
+        "symptom": "fever",
+        "status": "absent"
+      },
+      {
+        "symptom": "diarrhea",
+        "status": "absent"
+      },
+      {
+        "symptom": "urinary_symptoms",
+        "status": "absent"
+      },
+      {
+        "symptom": "pregnancy",
+        "status": "absent"
+      },
+      {
+        "symptom": "bleeding",
+        "status": "absent"
+      }
+    ],
+    "symptom_details_json": {
+      "epigastric_pain": {
+        "location": "The pain is in the upper middle abdomen."
+      },
+      "radiation_to_back": {
+        "migration": "The pain radiates to the back."
+      },
+      "severe_persistent_pain": {
+        "quality": "It is severe and persistent.",
+        "duration": "The pain started today and has not settled."
+      },
+      "vomiting": {
+        "status": "present",
+        "detail": "Repeated vomiting is present."
+      },
+      "very_unwell_appearance": {
+        "detail": "The person feels very unwell."
+      },
+      "alcohol_or_gallstone_risk_factors": {
+        "detail": "Recent heavy alcohol use or gallstones should be checked."
+      },
+      "fever": {
+        "status": "absent",
+        "detail": "Fever is not the main discriminating fact."
+      },
+      "diarrhea": {
+        "status": "absent",
+        "detail": "No diarrhea is the main symptom."
+      },
+      "urinary_symptoms": {
+        "status": "absent",
+        "detail": "No urinary symptoms are reported."
+      },
+      "pregnancy": {
+        "status": "absent",
+        "detail": "Pregnancy is not relevant in this case."
+      },
+      "bleeding": {
+        "status": "absent",
+        "detail": "No bleeding is reported."
+      }
+    },
+    "importance_scores_json": {
+      "epigastric_pain": 100,
+      "radiation_to_back": 100,
+      "severe_persistent_pain": 100,
+      "vomiting": 75,
+      "very_unwell_appearance": 70,
+      "alcohol_or_gallstone_risk_factors": 50,
+      "fever": 60,
+      "diarrhea": 100,
+      "urinary_symptoms": 55,
+      "pregnancy": 50,
+      "bleeding": 65
+    },
+    "uniqueness_scores_json": {
+      "epigastric_pain": 97,
+      "radiation_to_back": 97,
+      "severe_persistent_pain": 97,
+      "vomiting": 81,
+      "very_unwell_appearance": 97,
+      "alcohol_or_gallstone_risk_factors": 97,
+      "fever": 68,
+      "diarrhea": 84,
+      "urinary_symptoms": 100,
+      "pregnancy": 100,
+      "bleeding": 100
+    },
+    "red_flags_json": [
+      "severe_persistent_pain",
+      "radiation_to_back",
+      "repeated_vomiting"
+    ]
+  }
+]

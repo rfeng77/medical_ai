@@ -1,69 +1,69 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 type PostTurnRatings = {
-  perceivedUrgency: number
-  perceivedRisk: number
-  confidence: number
-}
+  perceivedUrgency: number;
+  perceivedRisk: number;
+  confidence: number;
+};
 
 type PostTurnRatingPanelProps = {
-  disabled?: boolean
-  onSubmit: (ratings: PostTurnRatings) => void
-}
+  disabled?: boolean;
+  onSubmit: (ratings: PostTurnRatings) => void;
+};
 
-type RatingKey = keyof PostTurnRatings
+type RatingKey = keyof PostTurnRatings;
 
 const ratingItems: Array<{
-  key: RatingKey
-  label: string
-  leftLabel: string
-  rightLabel: string
+  key: RatingKey;
+  label: string;
+  leftLabel: string;
+  rightLabel: string;
 }> = [
   {
-    key: 'perceivedUrgency',
-    label: 'Perceived urgency',
-    leftLabel: 'Not urgent',
-    rightLabel: 'Very urgent',
+    key: "perceivedUrgency",
+    label: "How urgent you feel about this case?",
+    leftLabel: "Not urgent",
+    rightLabel: "Very urgent",
   },
   {
-    key: 'perceivedRisk',
-    label: 'Perceived risk',
-    leftLabel: 'Low risk',
-    rightLabel: 'High risk',
+    key: "perceivedRisk",
+    label: "How risky you feel this case is?",
+    leftLabel: "Low risk",
+    rightLabel: "High risk",
   },
   {
-    key: 'confidence',
-    label: 'Confidence',
-    leftLabel: 'Not confident',
-    rightLabel: 'Very confident',
+    key: "confidence",
+    label: "How certain are you about the final decision?",
+    leftLabel: "Not certain",
+    rightLabel: "Very certain",
   },
-]
+];
 
 export function PostTurnRatingPanel({
   disabled = false,
   onSubmit,
 }: PostTurnRatingPanelProps) {
-  const [ratings, setRatings] = useState<Partial<PostTurnRatings>>({})
+  const [ratings, setRatings] = useState<Partial<PostTurnRatings>>({});
 
   const allRatingsCompleted = ratingItems.every(
     (item) => ratings[item.key] !== undefined,
-  )
+  );
 
   function updateRating(key: RatingKey, value: string) {
     setRatings((currentRatings) => ({
       ...currentRatings,
       [key]: Number(value),
-    }))
+    }));
   }
 
   function submitRatings() {
-    if (!allRatingsCompleted || disabled) return
+    if (!allRatingsCompleted || disabled) return;
 
     onSubmit({
       perceivedUrgency: ratings.perceivedUrgency ?? 0,
       perceivedRisk: ratings.perceivedRisk ?? 0,
       confidence: ratings.confidence ?? 0,
-    })
+    });
   }
 
   return (
@@ -74,7 +74,7 @@ export function PostTurnRatingPanel({
 
       <div className="post-turn-rating-fields">
         {ratingItems.map((item) => {
-          const value = ratings[item.key]
+          const value = ratings[item.key];
 
           return (
             <label className="post-turn-rating-field" key={item.key}>
@@ -99,7 +99,7 @@ export function PostTurnRatingPanel({
                 <span>{item.rightLabel}</span>
               </span>
             </label>
-          )
+          );
         })}
       </div>
 
@@ -113,5 +113,5 @@ export function PostTurnRatingPanel({
         </button>
       </div>
     </section>
-  )
+  );
 }
