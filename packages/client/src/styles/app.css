@@ -659,10 +659,25 @@ button:disabled {
   font-weight: 700;
 }
 
+.triage-reasoning-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.triage-reasoning-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #172033;
+}
+
 .triage-reasoning-input {
   width: 100%;
-  min-height: 92px;
-  max-height: 140px;
+  min-height: 74px;
+  max-height: 130px;
   resize: vertical;
   background: #f8fbff;
   border: 1px solid #c9d3df;

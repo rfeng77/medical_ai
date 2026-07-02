@@ -41,7 +41,7 @@ function joinWithAnd(items: string[]): string {
 
 decisionRouter.post("/", (req: Request<unknown, unknown, DecisionRequest>, res: Response) => {
   try {
-    const { participantId, caseId, condition, sessionId, selectedDecision, reasoning } = req.body;
+    const { participantId, caseId, condition, sessionId, selectedDecision, reasoning, reasoningDetails } = req.body;
 
     if (!participantId || !caseId || !condition || !sessionId || !selectedDecision || !reasoning) {
       res.status(400).json({
@@ -70,6 +70,7 @@ decisionRouter.post("/", (req: Request<unknown, unknown, DecisionRequest>, res: 
       sessionId,
       selectedDecision,
       reasoning,
+      reasoningDetails,
       disclosedFields: memory.aiVisibleFields,
       latestDecisionResult: memory.latestDecisionResult,
       groundTruthHidden: true

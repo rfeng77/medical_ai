@@ -372,6 +372,7 @@ export type DecisionRequest = {
   sessionId: string;
   selectedDecision: TriageOption;
   reasoning: string;
+  reasoningDetails?: Record<string, string>;
 };
 
 export type DecisionResponse = {

@@ -48,6 +48,7 @@ export type DecisionApiRequest = {
   sessionId: string
   selectedDecision: string
   reasoning: string
+  reasoningDetails?: Record<string, string>
 }
 
 export type PostTurnRatingRequest = {

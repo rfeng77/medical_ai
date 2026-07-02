@@ -1,5 +1,6 @@
 import decisionTreeData from "../data/abdominalPainDecisionTree.json";
 import { createEmptyParticipantMemory } from "../stores/memoryStore";
+import { saveAndPrintTurnMetrics } from "../stores/turnMetricsStore";
 import type {
   AbdominalPainDecisionTree,
   ClinicalField,
@@ -240,6 +241,13 @@ export async function runSelfTriageTurn({
     matchingResult,
     decisionResult,
     onToken: onResponseToken
+  });
+  await saveAndPrintTurnMetrics({
+    message,
+    memory: symptomUpdatedMemory,
+    matchingResult,
+    decisionResult,
+    response
   });
 
   const timestamp = new Date().toISOString();
